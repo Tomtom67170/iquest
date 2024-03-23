@@ -93,9 +93,9 @@ class QuêteduQI(toga.App):
         self.bouton2 = toga.Button(text="Modifier quiz", style=Pack(width=300), on_press=self.null) #self.modifier_main)
     def option_taille(self, widget=None):
         self.main_window.info_dialog("Debug",f"Taille de la fenêtre: {self.main_window.size}")
-    def option_skip(self, widget):
+    async def option_skip(self, widget):
         self.essaie = 0
-        self.lecture_quiz_check()
+        await self.lecture_quiz_check()
     def option_def_menu(self, widget=None):
         file = toga.Group("Fichier")
         action = toga.Group("Action")
@@ -624,7 +624,7 @@ class QuêteduQI(toga.App):
             cannot = toga.Label(text="L'option d'aide à la réponse a été désactivée pour ce questionnaire", style=Pack(font_family="Calibri light", font_size=12, text_align = CENTER))
             if current_platform == "android": cannot.text = "\n".join(textwrap.wrap("L'option d'aide à la réponse a été désactivée pour ce questionnaire", width=self.width_windows))
             self.main_box.add(cannot)
-    async def lecture_quiz_check(self, widget):
+    async def lecture_quiz_check(self, widget=None):
         don = self.entré.value
         resp = self.soluc[self.question]
         if self.proprety[3]:
