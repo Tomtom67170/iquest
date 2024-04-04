@@ -93,7 +93,7 @@ class QuêteduQI(toga.App):
         self.bouton2 = toga.Button(text="Modifier quiz", style=Pack(width=300), on_press=self.null) #self.modifier_main)
     def option_taille(self, widget=None):
         self.main_window.info_dialog("Debug",f"Taille de la fenêtre: {self.main_window.size}")
-    async def option_skip(self, widget):
+    async def option_skip(self, widget=None):
         self.essaie = 0
         await self.lecture_quiz_check()
     def option_def_menu(self, widget=None):
