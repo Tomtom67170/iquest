@@ -46,16 +46,17 @@ class QuêteduQI(toga.App):
         self.main_window.show()
 
         if current_platform == "android":
-            self.width_windows = 40
-            self.width_aide = 20
             path = str(self.app.paths.data).split("/")
             user = path[3]
             self.android_path = f"/storage/emulated/{user}/documents/Quizs/"
             if not(os.path.exists(self.android_path)):
                 os.makedirs(self.android_path)
-        self.option_défintion() 
-        self.option_main()
-        self.option_def_menu()
+        self.option_défintion()
+        if current_platform != "android":
+            self.option_main()
+            self.option_def_menu()
+        else:
+            self.android_startup()
     def error1(self, widget):
         self.main_window.error_dialog("Erreur", "Cette action n'est pas possible pour le moment! Veuillez entrer au moins une question puis une réponse!")
     def error2(self, widget):
@@ -761,5 +762,16 @@ class QuêteduQI(toga.App):
             if x == char:
                 return True
         return False
+    def android_startup(self, widget=None):
+        self.titre.text = "Bienvenue dans\nQuête du QI!"
+        self.aide.text = "Appuyer sur \"Démarrer\"\npour entrer dans l'application"
+        self.bouton1.text, self.bouton1.on_press = "Démarrer", self.android_act
+        self.main_box.add(self.titre, self.aide, self.bouton1)
+    def android_act(self, widget=None):
+        self.width_windows = self.main_window.size[0]//11
+        self.width_aide = self.main_window.size[0]//18
+        self.option_défintion()
+        self.option_main()
+        self.option_def_menu()
 def main():
     return QuêteduQI(icon="resources/logo.ico")
