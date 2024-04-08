@@ -628,6 +628,10 @@ class QuêteduQI(toga.App):
     async def lecture_quiz_check(self, widget=None):
         don = self.entré.value
         resp = self.soluc[self.question]
+        if don != self.soluc[self.question]:
+            legit = False
+        else:
+            legit = True
         if self.proprety[3]:
             don = don.lower()
             resp = self.soluc[self.question].lower()
@@ -640,7 +644,10 @@ class QuêteduQI(toga.App):
             if len(word) >= len(treated)//2 and len(word) != 0:
                 don = resp
         if don == resp:
-            await self.main_window.info_dialog(title="Bonne réponse", message="La réponse donné est juste! Nous allons passé à la question suivante", on_result=self.null)
+            if legit:
+                await self.main_window.info_dialog(title="Bonne réponse", message="Excellente réponse!", on_result=self.null)
+            else:
+                await self.main_window.info_dialog(title="Bonne réponse", message=f"Attention toutefois, la réponse exacte était: {self.soluc[self.question]}")
             self.essaie = 2
             self.question_passé.append(self.question)
             await self.lecture_quiz_test()
@@ -741,7 +748,7 @@ class QuêteduQI(toga.App):
         else:
             ok = (self.A_s.value == self.get_rep("A", self.rep[self.num_question]) and self.B_s.value == self.get_rep("B", self.rep[self.num_question]) and self.C_s.value == self.get_rep("C", self.rep[self.num_question]) and self.D_s.value == self.get_rep("D", self.rep[self.num_question]))
         if ok:
-            await self.main_window.info_dialog(title="Bonne réponse", message="Il s'agit de la bonne réponse!\nNous allons passer à la question suivante", on_result=self.null)
+            await self.main_window.info_dialog(title="Bonne réponse", message="Excellente réponse!", on_result=self.null)
             self.essaie = 2
             self.question_passé.append(self.num_question)
             await self.lecture_QCM_test()
