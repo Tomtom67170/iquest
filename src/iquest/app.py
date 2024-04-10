@@ -61,28 +61,39 @@ class QuêteduQI(toga.App):
         self.main_window.error_dialog("Erreur", "Cette action n'est pas possible pour le moment! Veuillez entrer au moins une question puis une réponse!")
     def error2(self, widget):
         self.main_window.error_dialog("Erreur", "Cette fonctionnalité n'est pas disponible pour le moment! Vous êtes sur une version de dévellopement")
-    def nav_question_sup(self, widget):
-        del self.quest[self.page], self.soluc[self.page]
-        self.création_question_rafraichir()
-    def nav_question_previous(self, widget):
+    def nav_sup(self, widget):
+        if self.mode == "simple":
+            del self.quest[self.page], self.soluc[self.page]
+            self.création_question_rafraichir()
+        elif self.mode == "QCM":
+            print(self.soluc)
+            a_t = (self.page)*4 + 1
+            b_t = (self.page)*4 + 2
+            c_t = (self.page)*4 + 3
+            d_t = (self.page)*4 + 4
+            del self.quest[self.page]
+            for _ in range(4):
+                self.soluc[a_t]
+            self.création_QCM_question()
+        elif self.mode == "true/false":
+            del self.quest[self.page], self.soluc[self.page]
+            self.création_truefalse_rafraichir()
+    def nav_previous(self, widget):
         self.page -= 1
-        self.création_question_rafraichir()
-    def nav_question_next(self, widget):
+        if self.mode == "simple":
+            self.création_question_rafraichir()
+        elif self.mode == "QCM":
+            self.création_QCM_question()
+        elif self.mode == "true/false":
+            self.création_truefalse_rafraichir()
+    def nav_next(self, widget):
         self.page += 1
-        self.création_question_rafraichir()
-    def nav_QCM_sup(self, widget):
-        a_t = (self.page)*4 + 1
-        b_t = (self.page)*4 + 2
-        c_t = (self.page)*4 + 3
-        d_t = (self.page)*4 + 4
-        del self.quest[self.page], self.soluc[a_t], self.soluc[b_t], self.soluc[c_t], self.soluc[d_t]
-        self.création_QCM_question()
-    def nav_QCM_previous(self, widget):
-        self.page -= 1
-        self.création_QCM_question()
-    def nav_QCM_next(self, widget):
-        self.page += 1
-        self.création_QCM_question()
+        if self.mode == "simple":
+            self.création_question_rafraichir()
+        elif self.mode == "QCM":
+            self.création_QCM_question()
+        elif self.mode == "true/false":
+            self.création_truefalse_rafraichir()
     def option_défintion(self, widget=None):
         self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         self.main_window.content = self.main_box
@@ -146,6 +157,10 @@ class QuêteduQI(toga.App):
             else: self.main_window.close()
     def création_Créer(self, widget):
         #self.main_window.info_dialog("Debug",f"Chemin: {self.app.paths.data}")
+        self.proprety = []
+        self.quest = []
+        self.soluc = []
+        self.fichier = ""
         self.option_défintion()
         self.titre.text="Création d'un quiz"
         if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap("Quelle type de questionnaire crée?", width=self.width_aide))
@@ -156,8 +171,10 @@ class QuêteduQI(toga.App):
         self.bouton1.on_press= self.création_question_rafraichir
         self.bouton2.text="QCM (Choix multiples)"
         self.bouton2.on_press = self.création_QCM_question
+        self.true_false_button = toga.Button(text="Vrai ou faux", style=Pack(width=300), on_press=self.création_truefalse_rafraichir)
+        self.bouton2.style.update(padding_bottom=5)
         self.bouton3.text, self.bouton3.on_press ="Quitter", self.option_quit
-        self.main_box.add(self.titre, self.aide, self.desc, self.bouton1, self.bouton2, self.bouton3)
+        self.main_box.add(self.titre, self.aide, self.desc, self.bouton1, self.bouton2, self.true_false_button, self.bouton3)
     def création_question_rafraichir(self, widget=None):
         self.mode = "simple"
         self.phase = "quest"
@@ -184,9 +201,9 @@ class QuêteduQI(toga.App):
         self.bouton2.style.update(font_family="Calibri light", font_size=12)
         self.bouton3 = toga.Button(text="Quitter", on_press=self.option_quit_save, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER, width=300, padding=(5, 0, 20, 0)))
         self.nav = toga.Box(Pack(direction=ROW))
-        self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_question_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
-        self.next_button = toga.Button(text="Suivant", on_press=self.nav_question_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
-        self.previous_button = toga.Button(text="Précédent", on_press=self.nav_question_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
+        self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
+        self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
+        self.previous_button = toga.Button(text="Précédent", on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.nav.add(self.previous_button, self.del_button, self.next_button)
         if self.page == 0: self.previous_button.enabled = False
         else: self.previous_button.enabled = True
@@ -290,7 +307,7 @@ class QuêteduQI(toga.App):
         if (self.fichier != None) and self.fichier != False:
             dico = {}
             if self.mode == "simple": self.proprety = [self.mode, self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value]
-            else: self.proprety = [self.mode, self.mutiple_switch.value, self.number_rep_switch.value]
+            elif self.mode == "QCM": self.proprety = [self.mode, self.mutiple_switch.value, self.number_rep_switch.value]
             dico["proprety"] = self.proprety
             dico["quest"] = self.quest
             dico["soluc"] = self.soluc
@@ -357,9 +374,9 @@ class QuêteduQI(toga.App):
         self.bouton2.text, self.bouton2.on_press = "Terminer QCM", self.save
         self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
         self.nav = toga.Box(style=Pack(direction = ROW))
-        next_button = toga.Button(text="Suivant", on_press=self.nav_QCM_next)
-        previous_button = toga.Button(text="Précédent", on_press=self.nav_QCM_previous)
-        del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_QCM_sup)
+        next_button = toga.Button(text="Suivant", on_press=self.nav_next)
+        previous_button = toga.Button(text="Précédent", on_press=self.nav_previous)
+        del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup)
         self.option_text = toga.Label(text="Options:", style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER))
         self.mutiple_canva = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
         try: self.mutiple_switch = toga.Switch(style=Pack(font_family="Calibri light", font_size=12), text="Choix unique", on_change=self.change_check_QCM, value=self.proprety[1])
@@ -460,6 +477,59 @@ class QuêteduQI(toga.App):
                 self.soluc[c_t] = self.C_e.value
                 self.soluc[d_t] = self.D_e.value
             self.création_QCM_question()
+    def création_truefalse_rafraichir(self, widget=None):
+        self.mode = "true/false"
+        self.phase = "quest"
+        if self.proprety == []:
+            self.proprety = ["true/false"]
+        self.option_défintion()
+        #self.option_def_menu()
+        if self.page == len(self.quest): 
+            if current_platform == "android": self.titre.text = "Créer"
+            else:self.titre.text="Créer une question"
+        else: 
+            if current_platform == "android": self.titre.text = "Modifier"
+            else: self.titre.text="Modificer une question"
+        if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap("Veuillez entrer une question", width=self.width_aide))
+        else:self.aide.text="Veuillez entrer une question"
+        if current_platform == "android": self.desc.text= "\n".join(textwrap.wrap("Veuillez indiquez dans le champ ci-dessous votre question\nValidez la coche si votre affirmation est vraie\nAppuyer ensuite sur \"Valider question\" pour créer/modifier votre question", width=self.width_windows))
+        else:self.desc.text="Veuillez indiquez dans le champ ci-dessous votre question\nValidez la coche si votre affirmation est vraie\nAppuyer ensuite sur \"Valider question\" pour créer/modifier votre question"
+        self.entré = toga.TextInput(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), on_confirm=self.création_truefalse_save)
+        if self.page < len(self.quest):
+            self.entré.value = self.quest[self.page]
+        self.bouton1.text, self.bouton1.on_press = "Valider question", self.création_truefalse_save
+        self.bouton1.style.update(font_family="Calibri light", font_size=12)
+        self.bouton2.text, self.bouton2.on_press = "Terminer", self.save
+        self.bouton2.style.update(font_family="Calibri light", font_size=12)
+        self.bouton3 = toga.Button(text="Quitter", on_press=self.option_quit_save, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER, width=300, padding=(5, 0, 20, 0)))
+        self.nav = toga.Box(Pack(direction=ROW))
+        self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
+        self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
+        self.previous_button = toga.Button(text="Précédent", on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
+        self.truefalse_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai")
+        if self.page < len(self.quest):
+            self.truefalse_rep.value = self.soluc[self.page]
+        self.truefalse_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
+        self.truefalse_box.add(self.truefalse_rep)
+        self.nav.add(self.previous_button, self.del_button, self.next_button)
+        if self.page == 0: self.previous_button.enabled = False
+        else: self.previous_button.enabled = True
+        if self.page == len(self.quest): self.next_button.enabled, self.del_button.enabled = False, False
+        else: self.next_button.enabled, self.del_button.enabled = True, True
+        self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.truefalse_box, self.bouton1, self.bouton2, self.bouton3, self.nav)
+    def création_truefalse_save(self, widget=None):
+        actuel = self.truefalse_rep.value
+        print(actuel)
+        question = self.entré.value
+        self.phase = "quest"
+        if self.page == len(self.soluc):
+            self.quest += [question]
+            self.soluc = self.soluc + [actuel]
+            self.page += 1
+        else: 
+            self.quest[self.page] = question
+            self.soluc[self.page] = actuel
+        self.création_truefalse_rafraichir()
     async def modifier_load(self, widget):
         self.page = 0
         if current_platform == "android":
@@ -482,8 +552,10 @@ class QuêteduQI(toga.App):
             if suite == True:
                 if self.proprety[0] == "simple":
                     self.création_question_rafraichir()
-                else:
+                elif self.proprety[0] == "QCM":
                     self.création_QCM_question()
+                elif self.proprety[0] == "true/false":
+                    self.création_truefalse_rafraichir()
             #self.main_window.info_dialog("Debug", f"Résultat de content: {content}")
             #if reponse.returncode == 0:
             #    self.main_window.info_dialog("Debug", f"Contenu de la fonction ls:{reponse.stdout}")
@@ -520,8 +592,10 @@ class QuêteduQI(toga.App):
             if suite == True:
                 if self.proprety[0] == "simple":
                     self.création_question_rafraichir()
-                else:
+                elif self.proprety[0] == "QCM":
                     self.création_QCM_question()
+                elif self.proprety[0] == "true/false":
+                    self.création_truefalse_rafraichir()
         else:
             self.main_window.error_dialog(title="Aucun fichier choisie", message="Vous n'avez pas choisie de fichier lorsque cela l'a été demandé!")
     async def lecture_load(self, widget):
