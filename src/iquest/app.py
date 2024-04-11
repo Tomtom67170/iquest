@@ -45,6 +45,13 @@ class QuêteduQI(toga.App):
         self.main_window.content = self.main_box
         self.main_window.show()
 
+        self.titre = toga.Label(text="Menu principal")
+        self.aide = toga.Label(text="Comment ça marche?")
+        self.desc = toga.Label(text="Ce logiciel simple à utiliser vous permettra de réviser en faisait des quizs réalisés par vous ou par des camarades\n Appuyer sur \"Créer un quiz\" pour créer un quiz et laisser-vous guider...\n Si au contraire vous avez déjà un quiz, appuyer sur \"Importer un quiz\" Pour ouvrir un quiz déjà existant!")
+        self.bouton1 = toga.Button(text="Créer un quiz", on_press=self.création_Créer)
+        self.bouton3 = toga.Button(text="Importer quiz", on_press=self.null)
+        self.bouton2 = toga.Button(text="Modifier quiz", on_press=self.null) #self.modifier_main)
+
         if current_platform == "android":
             path = str(self.app.paths.data).split("/")
             user = path[3]
@@ -97,12 +104,12 @@ class QuêteduQI(toga.App):
     def option_défintion(self, widget=None):
         self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         self.main_window.content = self.main_box
-        self.titre = toga.Label(text="Menu principal", style=Pack(font_family="Calibri light", font_size=30, text_align=CENTER))
-        self.aide = toga.Label(text="Comment ça marche?", style=Pack(font_family="Calibri light", font_size=20, text_align=CENTER))
-        self.desc = toga.Label(text="Ce logiciel simple à utiliser vous permettra de réviser en faisait des quizs réalisés par vous ou par des camarades\n Appuyer sur \"Créer un quiz\" pour créer un quiz et laisser-vous guider...\n Si au contraire vous avez déjà un quiz, appuyer sur \"Importer un quiz\" Pour ouvrir un quiz déjà existant!", style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER, padding=10))
-        self.bouton1 = toga.Button(text="Créer un quiz", style=Pack(width=300, padding=(20, 0, 5, 0)), on_press=self.création_Créer)
-        self.bouton3 = toga.Button(text="Importer quiz", style=Pack(width=300, padding=(5, 0, 20, 0)), on_press=self.null)
-        self.bouton2 = toga.Button(text="Modifier quiz", style=Pack(width=300), on_press=self.null) #self.modifier_main)
+        self.titre.style.update(font_family="Calibri light", font_size=30, text_align=CENTER)
+        self.aide.style.update(font_family="Calibri light", font_size=20, text_align=CENTER)
+        self.desc.style.update(font_family="Calibri light", font_size=12, text_align=CENTER, padding=10)
+        self.bouton1.style.update(width=300, padding=(20, 0, 5, 0))
+        self.bouton3.style.update(width=300, padding=(5, 0, 20, 0))
+        self.bouton2.style.update(width=300)
     def option_taille(self, widget=None):
         self.main_window.info_dialog("Debug",f"Taille de la fenêtre: {self.main_window.size}")
     async def option_skip(self, widget=None):
@@ -113,11 +120,11 @@ class QuêteduQI(toga.App):
         action = toga.Group("Action")
         debug = toga.Group("Debug")
         nav = toga.Group("Naviguation")
-        cmd4 = toga.Command(self.save, "Enregistrer", tooltip="Enregistrer votre questionnaire", group=file, order=1)
-        cmd5 = toga.Command(self.save_to, "Enregistrer sous", tooltip="Choisir un emplacement de sauvegarde", group=file, order=2)
-        cmd1 = toga.Command(self.création_Créer, "Créer quiz", tooltip="Lancer la création d'un quiz", group=action, order=1)
-        cmd2 = toga.Command(self.modifier_load, "Modifier quiz", tooltip="Importer un quiz et le mofifier", group=action, order=2)
-        cmd3 = toga.Command(self.lecture_load, "Importer quiz", tooltip="Faîtes vous testé en important un quiz", group=action, order=3)
+        cmd4 = toga.Command(self.save, "Enregistrer", tooltip="Enregistrer votre questionnaire", group=file, order=1, shortcut=toga.Key.MOD_1 + 's')
+        cmd5 = toga.Command(self.save_to, "Enregistrer sous", tooltip="Choisir un emplacement de sauvegarde", group=file, order=2, shortcut=toga.Key.MOD_1 + toga.Key.SHIFT + 's')
+        cmd1 = toga.Command(self.création_Créer, "Créer quiz", tooltip="Lancer la création d'un quiz", group=action, order=1, shortcut=toga.Key.MOD_1 + 'n')
+        cmd2 = toga.Command(self.modifier_load, "Modifier quiz", tooltip="Importer un quiz et le mofifier", group=action, order=2, shortcut=toga.Key.MOD_1 + 'm')
+        cmd3 = toga.Command(self.lecture_load, "Importer quiz", tooltip="Faîtes vous testé en important un quiz", group=action, order=3, shortcut=toga.Key.MOD_1 + 'o')
         cmd6 = toga.Command(self.option_reset, "Menu", tooltip="Accéder au menu", group=action, order=4)
         cmd7 = toga.Command(self.option_taille, "Taille", tooltip="Afficher la taille de la fenêtre", group=debug)
         self.next_page = toga.Command(self.nav_next, "Page suivante", tooltip="Passez à la page suivante", group=nav, shortcut=toga.Key.MOD_1 + toga.Key.RIGHT)
@@ -166,6 +173,7 @@ class QuêteduQI(toga.App):
         self.quest = []
         self.soluc = []
         self.fichier = ""
+        self.mode = ""
         self.change_state_nav(False)
         self.option_défintion()
         self.titre.text="Création d'un quiz"
@@ -518,21 +526,20 @@ class QuêteduQI(toga.App):
         self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.previous_button = toga.Button(text="Précédent", on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
-        self.truefalse_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai")
+        self.truefalse_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai", on_change=self.création_truefalse_save)
         if self.page < len(self.quest):
             self.truefalse_rep.value = self.soluc[self.page]
         self.truefalse_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
         self.truefalse_box.add(self.truefalse_rep)
         self.nav.add(self.previous_button, self.del_button, self.next_button)
-        if self.page == 0: self.previous_button.enabled = False
-        else: self.previous_button.enabled = True
-        if self.page == len(self.quest): self.next_button.enabled, self.del_button.enabled = False, False
-        else: self.next_button.enabled, self.del_button.enabled = True, True
+        if self.page == 0: self.previous_button.enabled, self.prev_page.enabled = False, False
+        else: self.previous_button.enabled, self.prev_page.enabled = True, True
+        if self.page == len(self.quest): self.next_button.enabled, self.del_button.enabled, self.next_page.enabled, self.suppr.enabled = False, False, False, False
+        else: self.next_button.enabled, self.del_button.enabled, self.next_page.enabled, self.suppr.enabled = True, True, True, True
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.truefalse_box, self.bouton1, self.bouton2, self.bouton3, self.nav)
-        self.focus()
+        self.entré.focus()
     def création_truefalse_save(self, widget=None):
         actuel = self.truefalse_rep.value
-        print(actuel)
         question = self.entré.value
         self.phase = "quest"
         if self.page == len(self.soluc):
