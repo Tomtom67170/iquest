@@ -130,8 +130,10 @@ class QuêteduQI(toga.App):
         self.next_page = toga.Command(self.nav_next, "Page suivante", tooltip="Passez à la page suivante", group=nav, shortcut=toga.Key.MOD_1 + toga.Key.RIGHT)
         self.prev_page = toga.Command(self.nav_previous, "Page précédente", tooltip="Passer à la page précédente", group=nav, shortcut=toga.Key.MOD_1 + toga.Key.LEFT)
         self.suppr = toga.Command(self.nav_sup, "Supprimer", tooltip="Supprimer la question", group=nav, shortcut=toga.Key.DELETE)
-        if current_platform == "windows":self.commands.add(cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, self.next_page, self.prev_page, self.suppr)
-        else: self.main_window.toolbar.add(cmd1, cmd2, cmd3, cmd5)
+        if current_platform == "linux":
+            self.suppr.shortcut = toga.Key.MOD_1 + 'e'
+        if current_platform == "windows" or current_platform == "linux":self.commands.add(cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, self.next_page, self.prev_page, self.suppr)
+        if current_platform != "windows": self.main_window.toolbar.add(cmd1, cmd2, cmd3, cmd5)
     def option_quit(self, widget=None):
         if current_platform == "android":
             sys.exit()
@@ -539,15 +541,18 @@ class QuêteduQI(toga.App):
     def création_truefalse_save(self, widget=None):
         actuel = self.truefalse_rep.value
         question = self.entré.value
-        self.phase = "quest"
-        if self.page == len(self.soluc):
-            self.quest += [question]
-            self.soluc = self.soluc + [actuel]
-            self.page += 1
-        else: 
-            self.quest[self.page] = question
-            self.soluc[self.page] = actuel
-        self.création_truefalse_rafraichir()
+        if question != "":
+            self.phase = "quest"
+            if self.page == len(self.soluc):
+                self.quest += [question]
+                self.soluc = self.soluc + [actuel]
+                self.page += 1
+            else: 
+                self.quest[self.page] = question
+                self.soluc[self.page] = actuel
+            self.création_truefalse_rafraichir()
+        else:
+            self.main_window.error_dialog("Question incomplète", "Veuillez entrer une question avant de pouvoir la valider!")
     async def modifier_load(self, widget):
         self.page = 0
         if current_platform == "android":
@@ -911,7 +916,7 @@ class QuêteduQI(toga.App):
         return False
     def android_startup(self, widget=None):
         self.titre.text = "Bienvenue dans\nQuête du QI!"
-        self.aide.text = "Appuyer sur \"Démarrer\"\npour entrer dans l'application"
+        self.aide.text = f"Version {self.version}"
         self.bouton1.text, self.bouton1.on_press = "Démarrer", self.android_act
         self.main_box.add(self.titre, self.aide, self.bouton1)
     def android_act(self, widget=None):
@@ -921,7 +926,8 @@ class QuêteduQI(toga.App):
         self.option_main()
         self.option_def_menu()
     def change_state_nav(self, state:bool):
-        for x in [self.next_page, self.prev_page, self.suppr]:
-            x.enabled = state
+        if current_platform != "android":
+            for x in [self.next_page, self.prev_page, self.suppr]:
+                x.enabled = state
 def main():
     return QuêteduQI(icon="resources/logo.ico")
