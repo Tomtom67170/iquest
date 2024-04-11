@@ -53,8 +53,8 @@ class QuêteduQI(toga.App):
                 os.makedirs(self.android_path)
         self.option_défintion()
         if current_platform != "android":
-            self.option_main()
             self.option_def_menu()
+            self.option_main()
         else:
             self.android_startup()
     def error1(self, widget):
@@ -112,6 +112,7 @@ class QuêteduQI(toga.App):
         file = toga.Group("Fichier")
         action = toga.Group("Action")
         debug = toga.Group("Debug")
+        nav = toga.Group("Naviguation")
         cmd4 = toga.Command(self.save, "Enregistrer", tooltip="Enregistrer votre questionnaire", group=file, order=1)
         cmd5 = toga.Command(self.save_to, "Enregistrer sous", tooltip="Choisir un emplacement de sauvegarde", group=file, order=2)
         cmd1 = toga.Command(self.création_Créer, "Créer quiz", tooltip="Lancer la création d'un quiz", group=action, order=1)
@@ -119,7 +120,10 @@ class QuêteduQI(toga.App):
         cmd3 = toga.Command(self.lecture_load, "Importer quiz", tooltip="Faîtes vous testé en important un quiz", group=action, order=3)
         cmd6 = toga.Command(self.option_reset, "Menu", tooltip="Accéder au menu", group=action, order=4)
         cmd7 = toga.Command(self.option_taille, "Taille", tooltip="Afficher la taille de la fenêtre", group=debug)
-        if current_platform == "windows":self.commands.add(cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7)
+        self.next_page = toga.Command(self.nav_next, "Page suivante", tooltip="Passez à la page suivante", group=nav, shortcut=toga.Key.MOD_1 + toga.Key.RIGHT)
+        self.prev_page = toga.Command(self.nav_previous, "Page précédente", tooltip="Passer à la page précédente", group=nav, shortcut=toga.Key.MOD_1 + toga.Key.LEFT)
+        self.suppr = toga.Command(self.nav_sup, "Supprimer", tooltip="Supprimer la question", group=nav, shortcut=toga.Key.DELETE)
+        if current_platform == "windows":self.commands.add(cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, self.next_page, self.prev_page, self.suppr)
         else: self.main_window.toolbar.add(cmd1, cmd2, cmd3, cmd5)
     def option_quit(self, widget=None):
         if current_platform == "android":
@@ -128,6 +132,7 @@ class QuêteduQI(toga.App):
             self.main_window.close()
     def option_main(self, widget=None):
         self.fichier = ""
+        self.change_state_nav(False)
         self.titre.text = "Menu principal"
         self.aide.text="Comment ça marche?"
         if current_platform == "android":
@@ -161,6 +166,7 @@ class QuêteduQI(toga.App):
         self.quest = []
         self.soluc = []
         self.fichier = ""
+        self.change_state_nav(False)
         self.option_défintion()
         self.titre.text="Création d'un quiz"
         if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap("Quelle type de questionnaire crée?", width=self.width_aide))
@@ -178,6 +184,7 @@ class QuêteduQI(toga.App):
     def création_question_rafraichir(self, widget=None):
         self.mode = "simple"
         self.phase = "quest"
+        self.change_state_nav(True)
         if self.proprety == []:
             self.proprety = ["simple", False, False, False]
         self.option_défintion()
@@ -205,10 +212,10 @@ class QuêteduQI(toga.App):
         self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.previous_button = toga.Button(text="Précédent", on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.nav.add(self.previous_button, self.del_button, self.next_button)
-        if self.page == 0: self.previous_button.enabled = False
-        else: self.previous_button.enabled = True
-        if self.page == len(self.quest): self.next_button.enabled, self.del_button.enabled = False, False
-        else: self.next_button.enabled, self.del_button.enabled = True, True
+        if self.page == 0: self.previous_button.enabled, self.prev_page.enabled = False, False
+        else: self.previous_button.enabled, self.prev_page.enabled = True, True
+        if self.page == len(self.quest): self.next_button.enabled, self.del_button.enabled, self.next_page.enabled, self.suppr.enabled = False, False, False, False
+        else: self.next_button.enabled, self.del_button.enabled, self.next_page.enabled, self.suppr.enabled = True, True, True, True
         self.option_text = toga.Label(text="Options:", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER))
         self.select_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
         self.checkbox_select = toga.Switch(text="Aide à la réponse", style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER), on_change=self.change_check)
@@ -229,6 +236,7 @@ class QuêteduQI(toga.App):
         self.next_button
         )
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_text, self.select_canva, self.inclusive_canva, self.shift_canva)
+        self.entré.focus()
     def change_check(self, widget):
         self.proprety = [self.mode, self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value]
     def change_check_QCM(self, widget):
@@ -357,6 +365,7 @@ class QuêteduQI(toga.App):
     def création_QCM_question(self, widget=None):
         self.phase = "quest"
         self.mode = "QCM"
+        self.change_state_nav(True)
         self.option_défintion()
         if self.proprety == []:
             self.proprety = [self.mode, False]
@@ -398,6 +407,7 @@ class QuêteduQI(toga.App):
         else: next_button.enabled, del_button.enabled = True, True
         self.nav.add(previous_button, del_button, next_button)
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_text, self.mutiple_canva, self.number_rep_canva)
+        self.entré.focus()
     def création_QCM_soluc(self, widget):
         if self.entré.value == "":
             self.main_window.error_dialog(title="Question incorrecte", message="Aucune question n'a été entré! Veuillez en entrer une!")
@@ -443,6 +453,7 @@ class QuêteduQI(toga.App):
             #bouton2.config(text = "Terminer", command=option.null)
             self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
             self.main_box.add(self.titre, self.aide, self.a_box, self.b_box, self.c_box, self.d_box, self.desc, self.bouton1, self.bouton3)
+            self.A_e.focus()
     def création_QCM_at_save(self, widget):
         if (self.A_s.value == False and self.B_s.value == False and self.C_s.value == False and self.D_s.value == False) or (self.A_e.value == "" or self.B_e.value == "" or self.C_e.value == "" or self.D_e.value == ""):
             self.main_window.error_dialog("Impossible de valider", "Assurez-vous d'avoir remplie tous les champs et d'avoir sélectionné au moins une réponse!")
@@ -480,6 +491,7 @@ class QuêteduQI(toga.App):
     def création_truefalse_rafraichir(self, widget=None):
         self.mode = "true/false"
         self.phase = "quest"
+        self.change_state_nav(True)
         if self.proprety == []:
             self.proprety = ["true/false"]
         self.option_défintion()
@@ -517,6 +529,7 @@ class QuêteduQI(toga.App):
         if self.page == len(self.quest): self.next_button.enabled, self.del_button.enabled = False, False
         else: self.next_button.enabled, self.del_button.enabled = True, True
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.truefalse_box, self.bouton1, self.bouton2, self.bouton3, self.nav)
+        self.focus()
     def création_truefalse_save(self, widget=None):
         actuel = self.truefalse_rep.value
         print(actuel)
@@ -644,6 +657,7 @@ class QuêteduQI(toga.App):
                 self.main_window.error_dialog(title="Erreur de format", message="Certaines données présente dans le fichier sont incorrectes! Impossible d'ouvrir le questionnaire!")
                 suite = False
             if suite == True:
+                self.change_state_nav(False)
                 self.clear = True
                 if self.proprety[0] == "simple":
                     await self.lecture_quiz_test()
@@ -699,6 +713,7 @@ class QuêteduQI(toga.App):
             cannot = toga.Label(text="L'option d'aide à la réponse a été désactivée pour ce questionnaire", style=Pack(font_family="Calibri light", font_size=12, text_align = CENTER))
             if current_platform == "android": cannot.text = "\n".join(textwrap.wrap("L'option d'aide à la réponse a été désactivée pour ce questionnaire", width=self.width_windows))
             self.main_box.add(cannot)
+        self.entré.focus()
     async def lecture_quiz_check(self, widget=None):
         don = self.entré.value
         resp = self.soluc[self.question]
@@ -854,5 +869,8 @@ class QuêteduQI(toga.App):
         self.option_défintion()
         self.option_main()
         self.option_def_menu()
+    def change_state_nav(self, state:bool):
+        for x in [self.next_page, self.prev_page, self.suppr]:
+            x.enabled = state
 def main():
     return QuêteduQI(icon="resources/logo.ico")
