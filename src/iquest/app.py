@@ -290,10 +290,10 @@ class QuêteduQI(toga.App):
             # bouton1.config(text = "Valider question", on_press=création.question.réponse)
     async def save(self, widget):
         #actuel = self.entré.value
-        warn = await self.main_window.question_dialog(title="Sauvegarder?", message="Voulez sauvegarder maintenant?", on_result=self.null)
+        #warn = await self.main_window.question_dialog(title="Sauvegarder?", message="Voulez sauvegarder maintenant?", on_result=self.null)
         #save = False
         if self.quest != [] and self.soluc != []:
-            if current_platform == "android" and warn == True:
+            if current_platform == "android":
                 self.titre.text = "Sauvegarder"
                 self.aide.text = "Choisir un nom\nde fichier"
                 self.desc.text = "\n".join(textwrap.wrap("Veuillez entrer un nom de questionnaire puis appuyez sur \"Sauvegarder\" pour lancer la sauvegarde\nPour modifier un questionnaire précedemment crée, entrez à nouveau son nom, puis validez!", width=self.width_windows))
@@ -303,11 +303,10 @@ class QuêteduQI(toga.App):
                 if self.mode == "simple": self.main_box.remove(self.option_text, self.inclusive_canva, self.select_canva, self.shift_canva)
                 self.main_window.info_dialog("Restrictions Android", "Dû aux restrictions Android, il n'est pas possible de choisir l'emplacement de sauvegarde du fichier. Les quizs sont sauvegardé dans \"Espace partagé/documents/Quizs/\"")
             else:
-                if warn:
-                    if self.fichier == "":
-                        self.fichier = await self.main_window.save_file_dialog(title="Sauvegarder le questionnaire", suggested_filename="Sans nom.json" ,file_types=["json"], on_result=self.file_selected)
-                    else:
-                        await self.file_selected()
+                if self.fichier == "":
+                    self.fichier = await self.main_window.save_file_dialog(title="Sauvegarder le questionnaire", suggested_filename="Sans nom.json" ,file_types=["json"], on_result=self.file_selected)
+                else:
+                    await self.file_selected()
         else:
             self.main_window.error_dialog("Impossible de sauvegarder", "Votre questionnaire est incomplet, assurez vous d'en avoir déjà importé ou crée un")
     async def file_selected(self, widget=None, dontknown=None):
@@ -344,10 +343,10 @@ class QuêteduQI(toga.App):
         else: self.création_QCM_question()
     async def save_to(self, widget):
         #actuel = self.entré.value
-        warn = await self.main_window.question_dialog(title="Sauvegarder?", message="Voulez sauvegarder maintenant?", on_result=self.null)
+        #warn = await self.main_window.question_dialog(title="Sauvegarder?", message="Voulez sauvegarder maintenant?", on_result=self.null)
         #save = False
         if self.quest != [] and self.soluc != []:
-            if current_platform == "android" and warn == True:
+            if current_platform == "android":
                 self.titre.text = "Sauvegarder"
                 self.aide.text = "Choisir un nom\nde fichier"
                 self.desc.text = "\n".join(textwrap.wrap("Veuillez entrer un nom de questionnaire puis appuyer sur \"Sauvegarder\" pour lancer la sauvegarde\nPour modifier un questionnaire précedemment crée, entrer à nouveau son nom, puis validé!", width=self.width_windows))
@@ -356,8 +355,7 @@ class QuêteduQI(toga.App):
                 self.main_box.remove(self.bouton2, self.bouton3, self.nav, self.option_text, self.inclusive_canva, self.select_canva, self.shift_canva)
                 self.main_window.info_dialog("Restrictions Android", "Dû aux restrictions Android, il n'est pas possible de choisir l'emplacement de sauvegarde du fichier. Les quizs sont sauvegardé dans \"Espace partagé/documents/Quizs/\"")
             else:
-                if warn:
-                    self.fichier = await self.main_window.save_file_dialog(title="Sauvegarder le questionnaire", suggested_filename="Sans nom.json" ,file_types=["json"], on_result=self.file_selected)
+                self.fichier = await self.main_window.save_file_dialog(title="Sauvegarder le questionnaire", suggested_filename="Sans nom.json" ,file_types=["json"], on_result=self.file_selected)
         else:
             self.main_window.error_dialog("Impossible de sauvegarder", "Votre questionnaire est incomplet, assurez vous d'en avoir déjà importé ou crée un") 
     def help_select_window(self, widget):
