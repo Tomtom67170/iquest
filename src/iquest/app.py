@@ -515,8 +515,6 @@ class QuêteduQI(toga.App):
         if current_platform == "android": self.desc.text= "\n".join(textwrap.wrap("Veuillez indiquez dans le champ ci-dessous votre question\nValidez la coche si votre affirmation est vraie\nAppuyer ensuite sur \"Valider question\" pour créer/modifier votre question", width=self.width_windows))
         else:self.desc.text="Veuillez indiquez dans le champ ci-dessous votre question\nValidez la coche si votre affirmation est vraie\nAppuyer ensuite sur \"Valider question\" pour créer/modifier votre question"
         self.entré = toga.TextInput(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), on_confirm=self.création_truefalse_save)
-        if self.page < len(self.quest):
-            self.entré.value = self.quest[self.page]
         self.bouton1.text, self.bouton1.on_press = "Valider question", self.création_truefalse_save
         self.bouton1.style.update(font_family="Calibri light", font_size=12)
         self.bouton2.text, self.bouton2.on_press = "Terminer", self.save
@@ -526,10 +524,12 @@ class QuêteduQI(toga.App):
         self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.previous_button = toga.Button(text="Précédent", on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
-        self.truefalse_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai", on_change=self.création_truefalse_save)
+        self.truefalse_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
+        self.truefalse_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai")
         if self.page < len(self.quest):
             self.truefalse_rep.value = self.soluc[self.page]
-        self.truefalse_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
+            self.entré.value = self.quest[self.page]
+        self.truefalse_rep.on_change = self.création_truefalse_save
         self.truefalse_box.add(self.truefalse_rep)
         self.nav.add(self.previous_button, self.del_button, self.next_button)
         if self.page == 0: self.previous_button.enabled, self.prev_page.enabled = False, False
