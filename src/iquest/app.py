@@ -634,8 +634,10 @@ class QuêteduQI(toga.App):
                 self.clear = True
                 if self.proprety[0] == "simple":
                     await self.lecture_quiz_test()
-                else:
+                elif self.proprety[0] == "QCM":
                     await self.lecture_QCM_test()
+                elif self.proprety[0] == "true/false":
+                    await self.lecture_truefalse_test()
         else:
             self.fichier = await self.main_window.open_file_dialog(title="Ouvrir un questionnaire", file_types=["json"], on_result=self.lecture_load_selected)
     async def lecture_load_selected(self, widget=None, dontknown=None):
@@ -661,8 +663,10 @@ class QuêteduQI(toga.App):
                 self.clear = True
                 if self.proprety[0] == "simple":
                     await self.lecture_quiz_test()
-                else:
+                elif self.proprety[0] == "QCM":
                     await self.lecture_QCM_test()
+                elif self.proprety[0] == "true/false":
+                    await self.lecture_truefalse_test()
         else:
             self.main_window.error_dialog(title="Aucun fichier choisie", message="Vous n'avez pas choisie de fichier lorsque cela l'a été demandé!")
     async def lecture_quiz_test(self, widget=None):
@@ -853,6 +857,48 @@ class QuêteduQI(toga.App):
                 await self.main_window.error_dialog(title="Mauvaise réponse", message=f"Ce n'est pas la bonne réponse!\nLa bonne réponse était la case: {self.reponse}!", on_result=self.null)
                 self.essaie = 2
                 await self.lecture_QCM_test()
+    async def lecture_truefalse_test(self, widget=None):
+        nb_quest = len(self.quest) - 1
+        self.question = random.randint(0, nb_quest)
+        if len(self.question_passé) == nb_quest + 1:
+            if self.clear == True:
+                await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
+            warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
+            if warn == True:
+                if current_platform == "android": sys.exit()
+                else: self.main_window.close()
+            else:
+                self.question = random.randint(0, nb_quest)
+                self.question_passé = []
+                self.clear = True
+        else:
+            while self.question in self.question_passé:
+                self.question = random.randint(0, nb_quest)
+        self.option_défintion()
+        if current_platform == "android": self.titre.text = "Répond à\nla question:"
+        else:self.titre.text="Répond à la question suivante:"
+        if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap(self.quest[self.question], width=self.width_aide))
+        else:self.aide.text=self.quest[self.question]
+        if current_platform == "android" : self.desc.text = "\n".join(textwrap.wrap("Active la coche si tu penses que l'affirmation est juste! Pour valider la réponse appuyer sur \"Valider\"", width=self.width_windows))
+        else:self.desc.text = "Active la coche si tu penses que l'affirmation est juste! Pour valider la réponse appuyer sur \"Valider\""
+        self.entré_box = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
+        self.entré_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai")
+        self.entré_box.add(self.entré_rep)
+        self.bouton1.text, self.bouton1.on_press = "Valider", self.lecture_truefalse_check
+        self.bouton2.text, self.bouton2.on_press = "Quitter", self.option_aband
+        self.help_canva = toga.Box(style=Pack(direction = ROW))
+        self.main_box.add(self.titre, self.aide, self.desc, self.entré_box, self.bouton1, self.bouton2)
+        self.bouton1.focus()
+    async def lecture_truefalse_check(self, widget=None):
+        don = self.entré_rep.value
+        resp = self.soluc[self.question]
+        if don == resp:
+            await self.main_window.info_dialog(title="Bonne réponse", message="Excellente réponse!", on_result=self.null)
+            self.question_passé.append(self.question)
+        else:
+            self.clear = False
+            await self.main_window.error_dialog(title="Mauvaise réponse", message=f"Ce n'est pas la bonne réponse\nNous allons passé à la question suivante", on_result=self.null)
+        await self.lecture_truefalse_test()
     def get_rep(self, char:str, to_check:str) -> bool:
         for x in to_check:
             if x == char:
