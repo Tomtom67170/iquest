@@ -45,12 +45,12 @@ class QuêteduQI(toga.App):
         self.main_window.content = self.main_box
         self.main_window.show()
 
-        self.titre = toga.Label(text="Menu principal")
-        self.aide = toga.Label(text="Comment ça marche?")
-        self.desc = toga.Label(text="Ce logiciel simple à utiliser vous permettra de réviser en faisait des quizs réalisés par vous ou par des camarades\n Appuyer sur \"Créer un quiz\" pour créer un quiz et laisser-vous guider...\n Si au contraire vous avez déjà un quiz, appuyer sur \"Importer un quiz\" Pour ouvrir un quiz déjà existant!")
-        self.bouton1 = toga.Button(text="Créer un quiz", on_press=self.création_Créer)
-        self.bouton3 = toga.Button(text="Importer quiz", on_press=self.null)
-        self.bouton2 = toga.Button(text="Modifier quiz", on_press=self.null) #self.modifier_main)
+        self.titre = toga.Label(text="self.titre")
+        self.aide = toga.Label(text="self.aide")
+        self.desc = toga.Label(text="self.desc")
+        self.bouton1 = toga.Button(text="self.bouton1", on_press=self.création_Créer)
+        self.bouton3 = toga.Button(text="self.bouton2", on_press=self.null)
+        self.bouton2 = toga.Button(text="self.bouton3", on_press=self.null)
 
         if current_platform == "android":
             path = str(self.app.paths.data).split("/")
