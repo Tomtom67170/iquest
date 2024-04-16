@@ -1,4 +1,4 @@
-import toga, os, json, random, asyncio, textwrap, sys, subprocess
+import toga, os, json, random, asyncio, textwrap, sys#, subprocess
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
 from toga.platform import current_platform
@@ -107,9 +107,9 @@ class QuêteduQI(toga.App):
         self.titre.style.update(font_family="Calibri light", font_size=30, text_align=CENTER)
         self.aide.style.update(font_family="Calibri light", font_size=20, text_align=CENTER)
         self.desc.style.update(font_family="Calibri light", font_size=12, text_align=CENTER, padding=10)
-        self.bouton1.style.update(width=300, padding=(20, 0, 5, 0))
-        self.bouton3.style.update(width=300, padding=(5, 0, 20, 0))
-        self.bouton2.style.update(width=300)
+        self.bouton1.style.update(width=300, padding=(20, 0, 5, 0), font_family="Calibri light", font_size=12)
+        self.bouton3.style.update(width=300, padding=(5, 0, 20, 0), font_family="Calibri light", font_size=12)
+        self.bouton2.style.update(width=300, font_family="Calibri light", font_size=12)
     def option_taille(self, widget=None):
         self.main_window.info_dialog("Debug",f"Taille de la fenêtre: {self.main_window.size}")
     async def option_skip(self, widget=None):
@@ -187,7 +187,7 @@ class QuêteduQI(toga.App):
         self.bouton1.on_press= self.création_question_rafraichir
         self.bouton2.text="QCM (Choix multiples)"
         self.bouton2.on_press = self.création_QCM_question
-        self.true_false_button = toga.Button(text="Vrai ou faux", style=Pack(width=300), on_press=self.création_truefalse_rafraichir)
+        self.true_false_button = toga.Button(text="Vrai ou faux", style=Pack(width=300, font_family="Calibri light", font_size=12), on_press=self.création_truefalse_rafraichir)
         self.bouton2.style.update(padding_bottom=5)
         self.bouton3.text, self.bouton3.on_press ="Quitter", self.option_quit
         self.main_box.add(self.titre, self.aide, self.desc, self.bouton1, self.bouton2, self.true_false_button, self.bouton3)
@@ -213,10 +213,10 @@ class QuêteduQI(toga.App):
         if self.page < len(self.quest):
             self.entré.value = self.quest[self.page]
         self.bouton1.text, self.bouton1.on_press = "Valider question", self.création_question_soluc
-        self.bouton1.style.update(font_family="Calibri light", font_size=12)
         self.bouton2.text, self.bouton2.on_press = "Terminer", self.save
-        self.bouton2.style.update(font_family="Calibri light", font_size=12)
-        self.bouton3 = toga.Button(text="Quitter", on_press=self.option_quit_save, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER, width=300, padding=(5, 0, 20, 0)))
+        self.bouton3.style.update(font_family="Calibri light", font_size=12, text_align=CENTER, width=300)
+        self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
+        self.desc.style.update(color="#000000")
         self.nav = toga.Box(Pack(direction=ROW))
         self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
@@ -640,6 +640,7 @@ class QuêteduQI(toga.App):
             except (KeyError, IndexError):
                 self.main_window.error_dialog(title="Erreur de format", message="Certaines données présente dans le fichier sont incorrectes! Impossible d'ouvrir le questionnaire!")
                 suite = False
+                self.question_passé = []
             if suite == True:
                 self.clear = True
                 if self.proprety[0] == "simple":
@@ -671,6 +672,7 @@ class QuêteduQI(toga.App):
             if suite == True:
                 self.change_state_nav(False)
                 self.clear = True
+                self.question_passé = []
                 if self.proprety[0] == "simple":
                     await self.lecture_quiz_test()
                 elif self.proprety[0] == "QCM":
@@ -712,9 +714,11 @@ class QuêteduQI(toga.App):
             if current_platform == "android": self.desc.text = "\n".join(textwrap.wrap(text, width=self.width_windows))
             else:self.desc.text=text
             self.desc.style.update(color="#FF0000")
+        else:
+            self.desc.style.update(color="#FF0000")
         self.entré = toga.TextInput(style=Pack(font_family = "Calibri light", font_size = 12, width=300), on_confirm=self.lecture_quiz_check)
         self.bouton1.text, self.bouton1.on_press = "Valider", self.lecture_quiz_check
-        self.passer = toga.Button(text="Passer",on_press=self.option_skip, style=Pack(width=300))
+        self.passer = toga.Button(text="Passer",on_press=self.option_skip, style=Pack(width=300, font_family="Calibri light", font_size=12, padding=(0, 0, 5, 0)))
         self.bouton2.text, self.bouton2.on_press = "Quitter", self.option_aband
         self.help_canva = toga.Box(style=Pack(direction = ROW))
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.passer, self.bouton2)
