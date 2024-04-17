@@ -176,6 +176,7 @@ class QuêteduQI(toga.App):
         self.soluc = []
         self.fichier = ""
         self.mode = ""
+        self.page = 0
         self.change_state_nav(False)
         self.option_défintion()
         self.titre.text="Création d'un quiz"
@@ -715,7 +716,7 @@ class QuêteduQI(toga.App):
             else:self.desc.text=text
             self.desc.style.update(color="#FF0000")
         else:
-            self.desc.style.update(color="#FF0000")
+            self.desc.style.update(color="#000000")
         self.entré = toga.TextInput(style=Pack(font_family = "Calibri light", font_size = 12, width=300), on_confirm=self.lecture_quiz_check)
         self.bouton1.text, self.bouton1.on_press = "Valider", self.lecture_quiz_check
         self.passer = toga.Button(text="Passer",on_press=self.option_skip, style=Pack(width=300, font_family="Calibri light", font_size=12, padding=(0, 0, 5, 0)))
