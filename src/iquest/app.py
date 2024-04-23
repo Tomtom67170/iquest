@@ -886,8 +886,15 @@ class QuêteduQI(toga.App):
         self.bouton2.text, self.bouton2.on_press = "Quitter", self.option_aband
         self.help_canva = toga.Box(style=Pack(direction = ROW))
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.passer, self.bouton2)
+        if self.global_proprety == []:
+            soluc_list = self.soluc
+        else:
+            soluc_list = []
+            for x in self.soluc:
+                if type(x) == str:
+                    soluc_list.append(x)            
         if self.proprety[1]:
-            self.option_menu = toga.Selection(style=Pack(width=200), items=["Choisir une réponse"]+self.soluc, value="Choisir une réponse")
+            self.option_menu = toga.Selection(style=Pack(width=200), items=["Choisir une réponse"]+soluc_list, value="Choisir une réponse")
             insert_button = toga.Button(text="Insérer cette réponse", on_press= lambda widget: setattr(self.entré, 'value', self.option_menu.value))
             self.help_canva.add(self.option_menu, insert_button)
             self.main_box.add(self.help_canva)
