@@ -328,9 +328,9 @@ class QuêteduQI(toga.App):
             self.option_défintion()
             if current_platform == "android": self.titre.text = "Créer"
             else:self.titre.text="Créer une question"
-            if current_platform == "android": self.aide.text = textwrap.wrap("Type de questionnaire", width=self.width_aide)
+            if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap("Type de questionnaire", width=self.width_aide))
             else: self.aide.text= "Type de questionnaire"
-            if current_platform == "android": self.desc.text = textwrap.wrap("Dans le menu déroulant, veuillez sélectionner le type de questionnaire que vous voulez créer", width=self.width_windows)
+            if current_platform == "android": self.desc.text = "\n".join(textwrap.wrap("Dans le menu déroulant, veuillez sélectionner le type de questionnaire que vous voulez créer", width=self.width_windows))
             else:self.desc.text = "Dans le menu déroulant, veuillez sélectionner le type de questionnaire que vous voulez créer"
             self.type_select = toga.Selection(items=["Questions simples", "QCM", "Vrai ou faux"], style=Pack(width=200, text_align=CENTER))
             if self.page != 0:
@@ -451,7 +451,7 @@ class QuêteduQI(toga.App):
         if actuel == "":
             self.main_window.error_dialog(title="Impossible de continuer", message="Aucune question n'a été entré!")
         else:
-            self.main_box.remove(self.nav, self.shift_canva, self.inclusive_canva, self.select_canva, self.option_text, self.bouton2)
+            self.main_box.remove(self.nav, self.option_button, self.bouton2)
             self.phase = "soluc"
             self.aide.text="Veuillez entrer une réponse"
             if current_platform == "android": self.desc.text = "\n".join(textwrap.wrap("Veuillez indiquez dans le champ en dessous la réponse adéquate a votre question\nAppuyer ensuite sur \"Valider question\" pour entrer une autre question\nSi votre quiz est fini, appuyer sur \"Terminer\"\nRépondre \\ pour annuler question", width=self.width_windows))
