@@ -29,13 +29,23 @@ class QuêteduQI(toga.App):
                     blocks.append(bytes(block)[:bytes_read])
         return read_stream(stream)
     def close_option(self, widget=None):
-        self.change_state_nav(True)
-        for x in self.nav.children:
-            x.enabled = True
-        if self.page == 0:
-            self.previous_button.enabled = False
-        self.option_window.close()
-        self.main_box.refresh()
+        if current_platform != "android":
+            self.change_state_nav(True)
+            for x in self.nav.children:
+                x.enabled = True
+            if self.page == 0:
+                self.previous_button.enabled = False
+            self.option_window.close()
+            self.main_box.refresh()
+        else:
+            if self.mode == "simple":
+                self.création_question_rafraichir()
+            elif self.mode == "QCM":
+                self.création_QCM_question()
+            elif self.mode == "true/false":
+                self.création_truefalse_rafraichir()
+            elif self.mode == "multi":
+                self.création_multi_checker()
     def startup(self):
         self.quest = []
         self.soluc = []
@@ -226,6 +236,47 @@ class QuêteduQI(toga.App):
             close = toga.Button(text="Quitter options", style=Pack(font_family="Calibri Light", font_size=12, width=300), on_press=lambda widget: self.close_option())
             self.option_main_box.add(close)
             self.option_window.show()
+        else:
+            self.option_défintion()
+            option_title = toga.Label(text="Options du quiz", style=Pack(font_family="Calibri Light", font_size=30, text_align=CENTER))
+            self.main_box.add(option_title)
+            if self.proprety[0] == "simple":
+                if self.mode == "multi":
+                    title_quiz = toga.Button(text="Options questions simples", style=Pack(font_size=12, text_align=CENTER), on_press=lambda widget: self.main_window.info_dialog("A propos des options sur les questionnaires universels", "Dans les questionnaires universels, si vous souhaitez changer les propriétés d'un autre type de questionnaire, vous devez vous rendre sur n'importe quelle question"))
+                    self.main_box.add(title_quiz)
+                self.select_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.checkbox_select = toga.Switch(text="Aide à la réponse", style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER), on_change=self.change_check)
+                help_select = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press=self.help_select_window)
+                self.inclusive_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.checkbox_inclusive = toga.Switch(text="L'essentiel compte!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
+                help_inclusive = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_inclusive_window)
+                self.shift_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.checkbox_shift = toga.Switch(text="Pas besoins de majuscule!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
+                help_shift = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_shift_window)
+                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value = self.proprety[1:4]
+                self.select_canva.add(self.checkbox_select, help_select)
+                self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
+                self.shift_canva.add(self.checkbox_shift, help_shift)
+                self.main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva)
+            if self.proprety[0] == "QCM":
+                if self.mode == "QCM" or self.mode == "multi":
+                    if self.mode == "multi":
+                        title_QCM = toga.Button(text="Options QCMs", style=Pack(font_size=12, text_align=CENTER), on_press=lambda widget: self.main_window.info_dialog("A propos des options sur les questionnaires universels", "Dans les questionnaires universels, si vous souhaitez changer les propriétés d'un autre type de questionnaire, vous devez vous rendre sur n'importe quelle question"))
+                        self.main_box.add(title_QCM)
+                self.mutiple_canva = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
+                self.mutiple_switch = toga.Switch(style=Pack(font_family="Calibri light", font_size=12), text="Choix unique", on_change=self.change_check_QCM, value=self.proprety[1])
+                self.help_multiple = toga.Button(style=Pack(font_family="Calibri light", font_size=12), text="?", on_press=self.help_multiple_window)
+                self.mutiple_canva.add(self.mutiple_switch, self.help_multiple)
+                self.number_rep_canva = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
+                self.number_rep_switch = toga.Switch(style=Pack(font_family="Calibri light", font_size=12), text="Indiquer le nombre de réponse", on_change=self.change_check_QCM, value=self.proprety[2])
+                self.help_number_rep = toga.Button(style=Pack(font_family="Calibri light", font_size=12), text="?", on_press=self.help_number_rep_window)
+                self.number_rep_canva.add(self.number_rep_switch, self.help_number_rep)
+                self.main_box.add(self.mutiple_canva, self.number_rep_canva)
+            if self.proprety[0] != "simple" and self.proprety[0] != "QCM":
+                title_other = toga.Label(text="Pas d'options disponible", style=Pack(font_size=12, text_align=CENTER))
+                self.main_box.add(title_other)
+            close = toga.Button(text="Quitter options", style=Pack(font_family="Calibri Light", font_size=12, width=300), on_press=lambda widget: self.close_option())
+            self.main_box.add(close)
     def null(self, widget=None, var=None):
         pass
     async def option_quit_save(self, widget):
