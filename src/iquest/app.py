@@ -525,8 +525,6 @@ class QuêteduQI(toga.App):
         if (self.fichier != None) and self.fichier != False:
             dico = {}
             if self.global_proprety == []:
-                if self.mode == "simple": self.proprety = [self.mode, self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value]
-                elif self.mode == "QCM": self.proprety = [self.mode, self.mutiple_switch.value, self.number_rep_switch.value]
                 dico["proprety"] = self.proprety
                 dico["quest"] = self.quest
                 dico["soluc"] = self.soluc
@@ -541,7 +539,16 @@ class QuêteduQI(toga.App):
                 with open (str(self.fichier),'w') as fichie:
                     fichie.write(json.dumps(dico, indent=4))
             except PermissionError:
-                self.main_window.error_dialog(title="Permission non accordée!", message="Vous n'avez pas les permissions de sauvegarder ici! Vérifier que vous avez les droits ou choisissez un autre emplacement!")
+                if current_platform == "android":
+                    self.fichier = self.fichier[:-5]+"_temp.json"
+                    try:
+                        with open (str(self.fichier),'w') as fichie:
+                            fichie.write(json.dumps(dico, indent=4))
+                        self.main_window.error_dialog("Fichier enregistré dans un emplacement temporaire", "Dû aux restrictions Android, le fichier n'a pu être écrit dans l'emplacement voulu. Il a été sauvegardé dans un fichier de secours, intitulé le [nom_de_votre_quiz]_temp.json. Veuillez supprimer le fichier d'origine, puis rouvrez ce logiciel pour l'enregistrer avec son nom d'origine!")
+                    except PermissionError:
+                        self.main_window.error_dialog("Impossible d'enregistrer une version normale et une version de secours du quiz!", "Nous n'avons pas les autorisations pour enregistrer le fichier demandé, et nous n'avons pas les autorisations pour enregistrer un fichier de secours. Veuillez supprimer le fichier de secours où le fichier original pour procéder à l'enregistrement!")
+                else:
+                    self.main_window.error_dialog(title="Permission non accordée!", message="Vous n'avez pas les permissions de sauvegarder ici! Vérifier que vous avez les droits ou choisissez un autre emplacement!")
             else:
                 await self.main_window.info_dialog(title="Enregistrement réussi!", message="Votre questionnaire a correctement été enregistré!")
                 await self.option_aband()
