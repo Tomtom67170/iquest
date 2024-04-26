@@ -30,13 +30,11 @@ class QuêteduQI(toga.App):
         return read_stream(stream)
     def close_option(self, widget=None):
         if current_platform != "android":
-            self.change_state_nav(True)
-            for x in self.nav.children:
-                x.enabled = True
             if self.page == 0:
                 self.previous_button.enabled = False
             self.option_window.close()
             self.main_box.refresh()
+            self.main_window.show()
         else:
             if self.mode == "simple":
                 self.création_question_rafraichir()
@@ -58,6 +56,8 @@ class QuêteduQI(toga.App):
         self.essaie = 2
         self.question_passé = []
         self.page = 0
+        self.len_proprety_quiz = 6
+        self.len_proprety_QCM = 3
         #version = 2.0
         self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, flex=1))
 
@@ -143,7 +143,7 @@ class QuêteduQI(toga.App):
         self.main_window.info_dialog("Debug",f"Taille de la fenêtre: {self.main_window.size}")
     async def option_skip(self, widget=None):
         self.essaie = 0
-        await self.lecture_quiz_check()
+        await self.lecture_quiz_check(skip=True)
     def option_def_menu(self, widget=None):
         file = toga.Group("Fichier")
         action = toga.Group("Action")
@@ -165,7 +165,7 @@ class QuêteduQI(toga.App):
         if current_platform != "windows": self.main_window.toolbar.add(cmd1, cmd2, cmd3, cmd5)
     def option_quit(self, widget=None):
         if current_platform == "android":
-            sys.exit()
+            self.exit()
         else:
             self.main_window.close()
     def option_main(self, widget=None):
@@ -188,11 +188,7 @@ class QuêteduQI(toga.App):
         self.option_main()
     def option_list(self, widget=None):
         if current_platform != "android":
-            if self.global_proprety != []:
-                self.change_state_nav(False)
-                for x in self.nav.children:
-                    x.enabled = False
-                self.main_box.refresh()
+            self.main_window.hide()
             self.option_window = toga.Window(title="Options de quiz", on_close=self.close_option)
             self.option_main_box = toga.Box(style=Pack(alignment=CENTER, text_align=CENTER, direction=COLUMN))
             self.option_window.content = self.option_main_box
@@ -211,12 +207,22 @@ class QuêteduQI(toga.App):
                 self.shift_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
                 self.checkbox_shift = toga.Switch(text="Pas besoins de majuscule!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
                 help_shift = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_shift_window)
-                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value = self.proprety[1:4]
+                self.show_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.checkbox_show_skip = toga.Switch(text="Je le savais!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
+                help_show_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_show_skip_window)
+                self.only_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.checkbox_only_skip = toga.Switch(text="Je veux pas savoir!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
+                help_only_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_only_skip_window)
+                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value = self.proprety[1:]
                 self.select_canva.add(self.checkbox_select, help_select)
                 self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
                 self.shift_canva.add(self.checkbox_shift, help_shift)
-                self.option_main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva)
+                self.show_skip.add(self.checkbox_show_skip, help_show_skip)
+                self.only_skip.add(self.checkbox_only_skip, help_only_skip)
+                self.checkbox_only_skip.enabled = self.checkbox_show_skip.value
+                self.option_main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip)
             if self.proprety[0] == "QCM":
+                self.main_window.hide()
                 if self.mode == "QCM" or self.mode == "multi":
                     if self.mode == "multi":
                         title_QCM = toga.Button(text="Paramètres liés aux QCMs (Cliquer pour en savoir plus)", style=Pack(font_size=12, text_align=CENTER), on_press=lambda widget: self.main_window.info_dialog("A propos des options sur les questionnaires universels", "Dans les questionnaires universels, si vous souhaitez changer les propriétés d'un autre type de questionnaire, vous devez vous rendre sur n'importe quelle question"))
@@ -253,11 +259,18 @@ class QuêteduQI(toga.App):
                 self.shift_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
                 self.checkbox_shift = toga.Switch(text="Pas besoins de majuscule!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
                 help_shift = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_shift_window)
-                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value = self.proprety[1:4]
+                self.show_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.checkbox_show_skip = toga.Switch(text="Je le savais!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
+                help_show_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_show_skip_window)
+                self.only_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.checkbox_only_skip = toga.Switch(text="Je veux pas savoir!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
+                help_only_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_only_skip_window)
+                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value = self.proprety[1:self.len_proprety_quiz]
                 self.select_canva.add(self.checkbox_select, help_select)
                 self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
                 self.shift_canva.add(self.checkbox_shift, help_shift)
-                self.main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva)
+                self.checkbox_only_skip.enabled = self.checkbox_show_skip.value
+                self.main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip)
             if self.proprety[0] == "QCM":
                 if self.mode == "QCM" or self.mode == "multi":
                     if self.mode == "multi":
@@ -282,12 +295,12 @@ class QuêteduQI(toga.App):
     async def option_quit_save(self, widget):
         warn = await self.main_window.question_dialog("Voulez-vous quitter", "Voulez-vous continuer? Toute données non sauvegardé sera perdu", on_result=self.null)
         if warn == True:
-            if current_platform == "android": sys.exit()
+            if current_platform == "android": self.exit()
             else: self.main_window.close()
     async def option_aband(self, widget=None):
         message = await self.main_window.question_dialog("Quitter", "Voulez-vous quitter le logiciel ?", on_result=self.null)
         if message == True:
-            if current_platform == "android":sys.exit()
+            if current_platform == "android":self.exit()
             else: self.main_window.close()
     def création_Créer(self, widget):
         #self.main_window.info_dialog("Debug",f"Chemin: {self.app.paths.data}")
@@ -390,7 +403,6 @@ class QuêteduQI(toga.App):
         elif self.type_select.value == "Vrai ou faux":
             self.création_truefalse_rafraichir()
     def création_question_rafraichir(self, widget=None):
-        len_proprety = 4
         if self.mode != "multi":
             self.mode = "simple"
         elif self.mode == "multi":
@@ -399,8 +411,8 @@ class QuêteduQI(toga.App):
         self.change_state_nav(True)
         if self.proprety == []:
             self.proprety = ["simple", False, False, False]
-        if len(self.proprety) < len_proprety:
-            while len(self.proprety) < len_proprety:
+        if len(self.proprety) < self.len_proprety_quiz:
+            while len(self.proprety) < self.len_proprety_quiz:
                 self.proprety.append(False)
             self.main_window.info_dialog("Questionnaire mis à jour", "Il a été détécté que votre questionnaire a été crée avec une ancienne version du logiciel et n'est plus compatible avec les dernières versions!\nVotre quiz a été mis à jour pour fonctionner sur les dernières versions, veuillez le sauvegarder pour appliquer la mise à jour!")
         self.option_défintion()
@@ -441,7 +453,13 @@ class QuêteduQI(toga.App):
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_button)
         self.entré.focus()
     def change_check(self, widget):
-        self.proprety = ["simple", self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value]
+        self.proprety = ["simple", self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value]
+        if self.proprety[4] == False:
+            self.checkbox_only_skip.enabled = False
+            self.option_main_box.refresh()
+        else:
+            self.checkbox_only_skip.enabled = True
+            self.option_main_box.refresh()
         if self.mode == "multi":self.global_proprety[1] = self.proprety
     def change_check_QCM(self, widget):
         self.proprety = ["QCM", self.mutiple_switch.value, self.number_rep_switch.value]
@@ -585,8 +603,11 @@ class QuêteduQI(toga.App):
         self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, l'utilisateur devra choisir une réponse parmi les 4 disponibles, si il choisit une des bonnes réponses, la question en sera validée.\nLorsque l'option est désactivée, l'utilisateur devra sélectionner toutes les réponses qu'il juge correct, ATTENTION: Il devra valider TOUTES les bonnes réponses")
     def help_number_rep_window(self, widget):
         self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, l'utilisateur sera tenu informé du nombre de réponses possibles")
+    def help_show_skip_window(self, widget):
+        self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, lorsque l'utilisateur passera une question, la bonne réponse ne lui sera pas dévoillée")
+    def help_only_skip_window(self, widget):
+        self.main_window.info_dialog(title="Aide de l'option", message="(Cette option ne s'applique que si l'option \"Je le savais!\" est activée) Si cette option est activée, l'utilisateur ne verra également pas la réponse si il a utilisé tout ces essais, en plus de ne pas pouvoir la connaître en passant la question!")
     def création_QCM_question(self, widget=None):
-        len_proprety = 3
         self.phase = "quest"
         if self.mode != "multi":
             self.mode = "QCM"
@@ -596,8 +617,8 @@ class QuêteduQI(toga.App):
         self.option_défintion()
         if self.proprety == []:
             self.proprety = [self.mode, False]
-        if len(self.proprety) < len_proprety:
-            while len(self.proprety) < len_proprety:
+        if len(self.proprety) < self.len_proprety_QCM:
+            while len(self.proprety) < self.len_proprety_QCM:
                 self.proprety.append(False)
             self.main_window.info_dialog("Questionnaire mis à jour", "Il a été détécté que votre questionnaire a été crée avec une ancienne version du logiciel et n'est plus compatible avec les dernières versions!\nVotre quiz a été mis à jour pour fonctionner sur les dernières versions, veuillez le sauvegarder pour appliquer la mise à jour!")
         if self.page == len(self.quest): 
@@ -955,7 +976,7 @@ class QuêteduQI(toga.App):
                     await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
                 warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
                 if warn == True:
-                    if current_platform == "android": sys.exit()
+                    if current_platform == "android": self.exit()
                     else: self.main_window.close()
                 else:
                     self.question = random.randint(0, nb_quest)
@@ -966,6 +987,17 @@ class QuêteduQI(toga.App):
                     self.question = random.randint(0, nb_quest)
         else:
             self.proprety = self.global_proprety[1]
+        if len(self.proprety) < self.len_proprety_quiz:
+            if await self.main_window.confirm_dialog("Questionnaire obsolète", "Ce questionnaire est expiré et n'est plus compatible avec cette version!\nMettez-le à jour puis réessayer!\nLa mise à jour est automatiquement réalisé lorsque vous enregistrer votre quiz, voulez-vous accéder à l'éditeur de quiz afin de sauvegarder et mettre à jour votre quiz?", on_result=self.null):
+                self.page = 0
+                self.mode = "simple"
+                if self.global_proprety == []:
+                    await self.création_question_rafraichir()
+                else:
+                    await self.création_multi_checker()
+            else:
+                await self.main_window.error_dialog("Impossible de lire le quiz", "Votre quiz comporte une erreur de donnée, et ne peux être lu. Modifiez-le dans l'éditeur, puis réessayer!", on_result=self.null)
+                self.option_quit()
         self.option_défintion()
         if current_platform == "android": self.titre.text = "Répond à\nla question:"
         else:self.titre.text="Répond à la question suivante:"
@@ -973,12 +1005,17 @@ class QuêteduQI(toga.App):
         else:self.aide.text=self.quest[self.question]
         if current_platform == "android" : self.desc.text = "\n".join(textwrap.wrap("Répondez dans le champs ci-dessous! Pour valider la réponse appuyer sur \"Valider\"", width=self.width_windows))
         else:self.desc.text = "Répondez dans le champs ci-dessous! Pour valider la réponse appuyer sur \"Valider\""
-        if (self.proprety[2]) or (self.proprety[3]):
+        if (self.proprety[2]) or (self.proprety[3]) or (self.proprety[4]):
             text = "Ce questionnaire est concerné par des changements de règle:"
             if self.proprety[2]:
                 text += "\nSi la moitié des mots de la réponse sont entré, la réponse est validé"
             if self.proprety[3]:
                 text += "\nLes majuscules et les minuscules n'ont pas d'importance dans la validation de la réponse"
+            if self.proprety[4]:
+                if self.proprety[5]:
+                    text += "\nLa bonne réponse à la question ne sera pas donné si vous passez la question OU que vous épuisé tous vos essais restant"
+                else:
+                    text += "\nLa bonne réponse à la question ne sera pas donné si vous passez la question"
             if current_platform == "android": self.desc.text = "\n".join(textwrap.wrap(text, width=self.width_windows))
             else:self.desc.text=text
             self.desc.style.update(color="#FF0000")
@@ -1007,7 +1044,7 @@ class QuêteduQI(toga.App):
             if current_platform == "android": cannot.text = "\n".join(textwrap.wrap("L'option d'aide à la réponse a été désactivée pour ce questionnaire", width=self.width_windows))
             self.main_box.add(cannot)
         self.entré.focus()
-    async def lecture_quiz_check(self, widget=None):
+    async def lecture_quiz_check(self, widget=None, skip=None):
         don = self.entré.value
         resp = self.soluc[self.question]
         if don != self.soluc[self.question]:
@@ -1039,18 +1076,21 @@ class QuêteduQI(toga.App):
         else:
             self.clear = False
             if self.essaie == 2:
-                self.main_window.error_dialog(title="Mauvaise réponse", message=f"La réponse donné est fausse!\nIl vous reste {self.essaie} essais\nAttention à l'orthographe, la ponctuation et les majuscules")
+                self.main_window.error_dialog(title="Mauvaise réponse", message=f"La réponse donnée est fausse!\nIl vous reste {self.essaie} essais\nAttention à l'orthographe, la ponctuation et les majuscules")
                 self.essaie -= 1
             elif self.essaie == 1:
-                self.main_window.error_dialog(title="Mauvaise réponse", message=f"La réponse donné est fausse!\nIl vous reste {self.essaie} essai\nAttention à l'orthographe, la ponctuation et les majuscules")
+                self.main_window.error_dialog(title="Mauvaise réponse", message=f"La réponse donnée est fausse!\nIl vous reste {self.essaie} essai\nAttention à l'orthographe, la ponctuation et les majuscules")
                 self.essaie = 0
             elif self.essaie == 0:
-                await self.main_window.error_dialog(title="Mauvaise réponse", message=f"La bonne réponse est: {self.soluc[self.question]}\nNous allons passé à la question suivante", on_result=self.null)
+                if (self.proprety[4] and skip != None) or (self.proprety[5] and self.proprety[4]):
+                    await self.main_window.error_dialog("Mauvaise réponse", "Vous avez épuisé le nombre d'essais\nNous allons passé à la question suivante", on_result=self.null)
+                else:
+                    await self.main_window.error_dialog(title="Mauvaise réponse", message=f"La bonne réponse est: {self.soluc[self.question]}\nNous allons passé à la question suivante", on_result=self.null)
                 self.essaie = 2
-            if self.global_proprety == []:
-                await self.lecture_quiz_test()
-            else:
-                await self.lecture_multi_check()
+                if self.global_proprety == []:
+                    await self.lecture_quiz_test()
+                else:
+                    await self.lecture_multi_check()
     async def lecture_QCM_test(self, widget=None):
         if self.global_proprety == []:
             nb_quest = len(self.quest) - 1
@@ -1060,7 +1100,7 @@ class QuêteduQI(toga.App):
                     await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
                 warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
                 if warn == True:
-                    if current_platform == "android": sys.exit()
+                    if current_platform == "android": self.exit()
                     else: self.main_window.close()
                 else:
                     self.question = random.randint(0, nb_quest)
@@ -1073,6 +1113,17 @@ class QuêteduQI(toga.App):
         else:
             self.proprety = self.global_proprety[2]
             self.num_question = self.question
+        if len(self.proprety) < self.len_proprety_QCM:
+            if await self.main_window.confirm_dialog("Questionnaire obsolète", "Ce questionnaire est expiré et n'est plus compatible avec cette version!\nMettez-le à jour puis réessayer!\nLa mise à jour est automatiquement réalisé lorsque vous enregistrer votre quiz, voulez-vous accéder à l'éditeur de quiz afin de sauvegarder et mettre à jour votre QCM?", on_result=self.null):
+                self.page = 0
+                self.mode = "QCM"
+                if self.global_proprety == []:
+                    await self.création_QCM_question()
+                else:
+                    await self.création_multi_checker()
+            else:
+                await self.main_window.error_dialog("Impossible de lire le QCM", "Votre QCM comporte une erreur de donnée, et ne peux être lu. Modifiez-le dans l'éditeur, puis réessayer!", on_result=self.null)
+                self.option_quit()
         question = self.quest[self.num_question]
         self.reponse = self.rep[self.num_question]
         self.option_défintion()
@@ -1080,74 +1131,64 @@ class QuêteduQI(toga.App):
         b_t = (self.num_question)*4 + 1
         c_t = (self.num_question)*4 + 2
         d_t = (self.num_question)*4 + 3
-        try:
-            if self.proprety[1]:
-                if current_platform == "android": self.titre.text = "Choisie\nune réponse"
-                else:self.titre.text="Choisie une réponse"
-                if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap(question, width=self.width_aide))
-                else:self.aide.text=question
-                desc_text = "Cliquez sur la bonne réponse"
-                if self.proprety[2]:
-                    desc_text += f"\nIl y a {len(self.rep[self.num_question])} réponse(s) possible(s)"
-                if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(desc_text), width=self.width_windows)
-                else: self.desc.text = desc_text
-                # result = num_question
-                if self.global_proprety == []:
-                    a_b = toga.Button(text=self.soluc[a_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="A")))
-                    b_b = toga.Button(text=self.soluc[b_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="B")))
-                    c_b = toga.Button(text=self.soluc[c_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="C")))
-                    d_b = toga.Button(text=self.soluc[d_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="D")))
-                else:
-                    a_b = toga.Button(text=self.soluc[self.num_question][0], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="A")))
-                    b_b = toga.Button(text=self.soluc[self.num_question][1], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="B")))
-                    c_b = toga.Button(text=self.soluc[self.num_question][2], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="C")))
-                    d_b = toga.Button(text=self.soluc[self.num_question][3], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="D")))
-                self.main_box.add(self.titre, self.aide, self.desc, a_b, b_b, c_b, d_b, self.bouton1)
+        if self.proprety[1]:
+            if current_platform == "android": self.titre.text = "Choisie\nune réponse"
+            else:self.titre.text="Choisie une réponse"
+            if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap(question, width=self.width_aide))
+            else:self.aide.text=question
+            desc_text = "Cliquez sur la bonne réponse"
+            self.desc.style.update(color="#000000")
+            if self.proprety[2]:
+                desc_text += f"\nIl y a {len(self.rep[self.num_question])} réponse(s) possible(s)"
+            if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(desc_text), width=self.width_windows)
+            else: self.desc.text = desc_text
+            # result = num_question
+            if self.global_proprety == []:
+                a_b = toga.Button(text=self.soluc[a_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="A")))
+                b_b = toga.Button(text=self.soluc[b_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="B")))
+                c_b = toga.Button(text=self.soluc[c_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="C")))
+                d_b = toga.Button(text=self.soluc[d_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="D")))
             else:
-                if current_platform == "android": self.titre.text = "Sélectionne\nla(les) réponse(s)"
-                else: self.titre.text = "Sélectionne la(les) réponse(s)"
-                if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap(question, width=self.width_aide))
-                else: self.aide.text = question
-                desc_text = "Sélectionner une ou plusieurs réponse qui vous semble correct, en les cochants\npuis appuyez sur \"Confirmer\" pour lancer l'examination de votre réponse"
-                if self.proprety[2]:
-                    desc_text += f"\n{len(self.rep[self.num_question])} réponse(s) est(sont) attendu(s)"
-                if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(text=str(desc_text), width=self.width_windows))
-                else: self.desc.text = desc_text
-                a_box = toga.Box(style=Pack(direction = ROW))
-                b_box = toga.Box(style=Pack(direction = ROW))
-                c_box = toga.Box(style=Pack(direction = ROW))
-                d_box = toga.Box(style=Pack(direction = ROW))
-                self.A_s = toga.Switch(style=Pack(font_size=12), text="")
-                self.B_s = toga.Switch(style=Pack(font_size=12), text="")
-                self.C_s = toga.Switch(style=Pack(font_size=12), text="")
-                self.D_s = toga.Switch(style=Pack(font_size=12), text="")
-                if self.global_proprety == []:
-                    A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[a_t])
-                    B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[b_t])
-                    C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[c_t])
-                    D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[d_t])
-                else:
-                    A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][0])
-                    B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][1])
-                    C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][2])
-                    D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][3])
-                a_box.add(A_e, self.A_s)
-                b_box.add(B_e, self.B_s)
-                c_box.add(C_e, self.C_s)
-                d_box.add(D_e, self.D_s)
-                self.bouton2.text, self.bouton2.on_press = "Confirmer", lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check=None))
-                self.main_box.add(self.titre, self.aide, self.desc, a_box, b_box, c_box, d_box, self.bouton2, self.bouton1)
-        except IndexError:
-            if await self.main_window.confirm_dialog("Questionnaire obsolète", "Ce questionnaire est expiré et n'est plus compatible avec cette version!\nMettez-le à jour puis réessayer!\nLa mise à jour est automatiquement réalisé lorsque vous enregistrer votre quiz, voulez-vous accéder à l'éditeur de quiz afin de sauvegarder et mettre à jour votre QCM?", on_result=self.null):
-                self.page = 0
-                self.mode = "QCM"
-                if self.global_proprety == []:
-                    await self.création_QCM_question()
-                else:
-                    await self.lecture_multi_check()
+                a_b = toga.Button(text=self.soluc[self.num_question][0], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="A")))
+                b_b = toga.Button(text=self.soluc[self.num_question][1], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="B")))
+                c_b = toga.Button(text=self.soluc[self.num_question][2], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="C")))
+                d_b = toga.Button(text=self.soluc[self.num_question][3], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="D")))
+            self.main_box.add(self.titre, self.aide, self.desc, a_b, b_b, c_b, d_b, self.bouton1)
+        else:
+            if current_platform == "android": self.titre.text = "Sélectionne\nla(les) réponse(s)"
+            else: self.titre.text = "Sélectionne la(les) réponse(s)"
+            if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap(question, width=self.width_aide))
+            else: self.aide.text = question
+            desc_text = "Sélectionner une ou plusieurs réponse qui vous semble correct, en les cochants\npuis appuyez sur \"Confirmer\" pour lancer l'examination de votre réponse"
+            self.desc.style.update(color="#000000")
+            if self.proprety[2]:
+                desc_text += f"\n{len(self.rep[self.num_question])} réponse(s) est(sont) attendu(s)"
+            if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(text=str(desc_text), width=self.width_windows))
+            else: self.desc.text = desc_text
+            a_box = toga.Box(style=Pack(direction = ROW))
+            b_box = toga.Box(style=Pack(direction = ROW))
+            c_box = toga.Box(style=Pack(direction = ROW))
+            d_box = toga.Box(style=Pack(direction = ROW))
+            self.A_s = toga.Switch(style=Pack(font_size=12), text="")
+            self.B_s = toga.Switch(style=Pack(font_size=12), text="")
+            self.C_s = toga.Switch(style=Pack(font_size=12), text="")
+            self.D_s = toga.Switch(style=Pack(font_size=12), text="")
+            if self.global_proprety == []:
+                A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[a_t])
+                B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[b_t])
+                C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[c_t])
+                D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[d_t])
             else:
-                await self.main_window.error_dialog("Impossible de lire le QCM", "Votre QCM comporte une erreur de donnée, et ne peux être lu. Modifiez-le dans l'éditeur, puis réessayer!", on_result=self.null)
-                self.option_quit()
+                A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][0])
+                B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][1])
+                C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][2])
+                D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][3])
+            a_box.add(A_e, self.A_s)
+            b_box.add(B_e, self.B_s)
+            c_box.add(C_e, self.C_s)
+            d_box.add(D_e, self.D_s)
+            self.bouton2.text, self.bouton2.on_press = "Confirmer", lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check=None))
+            self.main_box.add(self.titre, self.aide, self.desc, a_box, b_box, c_box, d_box, self.bouton2, self.bouton1)
         self.bouton1.text, self.bouton1.on_press = "Quitter", self.option_aband
     async def lecture_QCM_check(self, to_check:str):
         if self.proprety[1]:
@@ -1186,7 +1227,7 @@ class QuêteduQI(toga.App):
                     await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
                 warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
                 if warn == True:
-                    if current_platform == "android": sys.exit()
+                    if current_platform == "android": self.exit()
                     else: self.main_window.close()
                 else:
                     self.question = random.randint(0, nb_quest)
@@ -1204,6 +1245,7 @@ class QuêteduQI(toga.App):
         else:self.aide.text=self.quest[self.question]
         if current_platform == "android" : self.desc.text = "\n".join(textwrap.wrap("Active la coche si tu penses que l'affirmation est juste! Pour valider la réponse appuyer sur \"Valider\"", width=self.width_windows))
         else:self.desc.text = "Active la coche si tu penses que l'affirmation est juste! Pour valider la réponse appuyer sur \"Valider\""
+        self.desc.style.update(color="#000000")
         self.entré_box = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
         self.entré_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai")
         self.entré_box.add(self.entré_rep)
@@ -1233,7 +1275,7 @@ class QuêteduQI(toga.App):
                 await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
             warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
             if warn == True:
-                if current_platform == "android": sys.exit()
+                if current_platform == "android": self.exit()
                 else: self.main_window.close()
             else:
                 self.question = random.randint(0, nb_quest)
