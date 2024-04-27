@@ -53,10 +53,9 @@ class QuêteduQI(toga.App):
         self.reponse = []
         self.version_warn = False
         rang = 0
-        self.essaie = 2
         self.question_passé = []
         self.page = 0
-        self.len_proprety_quiz = 7
+        self.len_proprety_quiz = 8
         self.len_proprety_QCM = 3
         #version = 2.0
         self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, flex=1))
@@ -216,15 +215,20 @@ class QuêteduQI(toga.App):
                 self.congrat = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
                 self.checkbox_congrat = toga.Switch(text="Personne n'est parfait!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
                 help_congrat = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_congrat)
-                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value = self.proprety[1:]
+                self.number_essai = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.label_essai = toga.Label(text=f"Nombre d'essais autorisé par question\nActuellement réglé sur: {self.proprety[7]} essais", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER))
+                help_number_essai = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_number_essai)
+                self.number_essai_slider = toga.Slider(style=Pack(width=300), min=0, max=10, tick_count=11, on_release=self.change_check)
+                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value, self.number_essai_slider.value = self.proprety[1:]
                 self.select_canva.add(self.checkbox_select, help_select)
                 self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
                 self.shift_canva.add(self.checkbox_shift, help_shift)
                 self.show_skip.add(self.checkbox_show_skip, help_show_skip)
                 self.only_skip.add(self.checkbox_only_skip, help_only_skip)
                 self.congrat.add(self.checkbox_congrat, help_congrat)
+                self.number_essai.add(self.label_essai, help_number_essai)
                 self.checkbox_only_skip.enabled = self.checkbox_show_skip.value
-                self.option_main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip, self.congrat)
+                self.option_main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip, self.congrat, self.number_essai, self.number_essai_slider)
             if self.proprety[0] == "QCM":
                 self.main_window.hide()
                 if self.mode == "QCM" or self.mode == "multi":
@@ -272,15 +276,20 @@ class QuêteduQI(toga.App):
                 self.congrat = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
                 self.checkbox_congrat = toga.Switch(text="Personne n'est parfait!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
                 help_congrat = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_congrat)
-                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value = self.proprety[1:]
+                self.number_essai = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+                self.label_essai = toga.Label(text=f"Nombre d'essais autorisé par question\nActuellement réglé sur: {self.proprety[7]} essais", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER))
+                help_number_essai = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_number_essai)
+                self.number_essai_slider = toga.Slider(style=Pack(width=300), min=0, max=10, tick_count=11, on_release=self.change_check)
+                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value, self.number_essai_slider.value = self.proprety[1:]
                 self.select_canva.add(self.checkbox_select, help_select)
                 self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
                 self.shift_canva.add(self.checkbox_shift, help_shift)
                 self.show_skip.add(self.checkbox_show_skip, help_show_skip)
                 self.only_skip.add(self.checkbox_only_skip, help_only_skip)
                 self.congrat.add(self.checkbox_congrat, help_congrat)
+                self.number_essai.add(self.label_essai, help_number_essai)
                 self.checkbox_only_skip.enabled = self.checkbox_show_skip.value
-                self.main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip, self.congrat)
+                self.main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip, self.congrat, self.number_essai, self.number_essai_slider)
             if self.proprety[0] == "QCM":
                 if self.mode == "QCM" or self.mode == "multi":
                     if self.mode == "multi":
@@ -420,11 +429,13 @@ class QuêteduQI(toga.App):
         self.phase = "quest"
         self.change_state_nav(True)
         if self.proprety == []:
-            self.proprety = ["simple", False, False, False]
+            self.proprety = ["simple", False, False, False, False, False, False, 3]
         if len(self.proprety) < self.len_proprety_quiz:
             while len(self.proprety) < self.len_proprety_quiz:
                 self.proprety.append(False)
             self.main_window.info_dialog("Questionnaire mis à jour", "Il a été détécté que votre questionnaire a été crée avec une ancienne version du logiciel et n'est plus compatible avec les dernières versions!\nVotre quiz a été mis à jour pour fonctionner sur les dernières versions, veuillez le sauvegarder pour appliquer la mise à jour!")
+        if self.proprety[7] == False:
+            self.proprety[7] = 3
         self.option_défintion()
         #self.option_def_menu()
         if self.page == len(self.quest): 
@@ -463,13 +474,16 @@ class QuêteduQI(toga.App):
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_button)
         self.entré.focus()
     def change_check(self, widget):
-        self.proprety = ["simple", self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value]
+        self.proprety = ["simple", self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value, int(self.number_essai_slider.value)]
         if self.proprety[4] == False:
             self.checkbox_only_skip.enabled = False
-            self.option_main_box.refresh()
         else:
             self.checkbox_only_skip.enabled = True
+        self.label_essai.text = f"Nombre d'essais autorisé par question\nActuellement réglé sur: {self.proprety[7]} essais"
+        if current_platform != "android":
             self.option_main_box.refresh()
+        else:
+            self.main_box.refresh()
         if self.mode == "multi":self.global_proprety[1] = self.proprety
     def change_check_QCM(self, widget):
         self.proprety = ["QCM", self.mutiple_switch.value, self.number_rep_switch.value]
@@ -619,6 +633,8 @@ class QuêteduQI(toga.App):
         self.main_window.info_dialog(title="Aide de l'option", message="(Cette option ne s'applique que si l'option \"Je le savais!\" est activée) Si cette option est activée, l'utilisateur ne verra également pas la réponse si il a utilisé tout ces essais, en plus de ne pas pouvoir la connaître en passant la question!")
     def help_congrat(self, widget):
         self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, le questionnaire sera considéré comme étant un \"sans-faute\" même si l'utilisateur fait des fautes. Seuls passer la question ou être à court d'essais, annule la mention \"sans-faute\"")
+    def help_number_essai(self, widget):
+        self.main_window.info_dialog("Aide de l'option", "Par défault sur 3, ce paramètre permet de modifier le nombre d'essais par question autorisé à l'utilisateur (réglable de 0 à 10 essais)")
     def création_QCM_question(self, widget=None):
         self.phase = "quest"
         if self.mode != "multi":
@@ -1041,6 +1057,7 @@ class QuêteduQI(toga.App):
         self.bouton2.text, self.bouton2.on_press = "Quitter", self.option_aband
         self.help_canva = toga.Box(style=Pack(direction = ROW))
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.passer, self.bouton2)
+        self.essaie = self.proprety[7] - 1
         if self.global_proprety == []:
             soluc_list = self.soluc
         else:
@@ -1090,19 +1107,16 @@ class QuêteduQI(toga.App):
         else:
             if self.proprety[6] == False:
                 self.clear = False
-            if self.essaie == 2:
+            if self.essaie != 0:
                 self.main_window.error_dialog(title="Mauvaise réponse", message=f"La réponse donnée est fausse!\nIl vous reste {self.essaie} essais\nAttention à l'orthographe, la ponctuation et les majuscules")
                 self.essaie -= 1
-            elif self.essaie == 1:
-                self.main_window.error_dialog(title="Mauvaise réponse", message=f"La réponse donnée est fausse!\nIl vous reste {self.essaie} essai\nAttention à l'orthographe, la ponctuation et les majuscules")
-                self.essaie = 0
-            elif self.essaie == 0:
+            else:
                 self.clear = False
                 if (self.proprety[4] and skip != None) or (self.proprety[5] and self.proprety[4]):
                     await self.main_window.error_dialog("Mauvaise réponse", "Vous avez épuisé le nombre d'essais\nNous allons passé à la question suivante", on_result=self.null)
                 else:
                     await self.main_window.error_dialog(title="Mauvaise réponse", message=f"La bonne réponse est: {self.soluc[self.question]}\nNous allons passé à la question suivante", on_result=self.null)
-                self.essaie = 2
+                self.essaie = self.proprety[7]
                 if self.global_proprety == []:
                     await self.lecture_quiz_test()
                 else:
@@ -1147,6 +1161,7 @@ class QuêteduQI(toga.App):
         b_t = (self.num_question)*4 + 1
         c_t = (self.num_question)*4 + 2
         d_t = (self.num_question)*4 + 3
+        self.essaie = 2
         if self.proprety[1]:
             if current_platform == "android": self.titre.text = "Choisie\nune réponse"
             else:self.titre.text="Choisie une réponse"
