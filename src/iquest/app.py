@@ -164,7 +164,7 @@ class QuêteduQI(toga.App):
         if current_platform != "windows": self.main_window.toolbar.add(cmd1, cmd2, cmd3, cmd5)
     def option_quit(self, widget=None):
         if current_platform == "android":
-            self.exit()
+            sys.exit()
         else:
             self.main_window.close()
     def option_main(self, widget=None):
@@ -314,12 +314,12 @@ class QuêteduQI(toga.App):
     async def option_quit_save(self, widget):
         warn = await self.main_window.question_dialog("Voulez-vous quitter", "Voulez-vous continuer? Toute données non sauvegardé sera perdu", on_result=self.null)
         if warn == True:
-            if current_platform == "android": self.exit()
+            if current_platform == "android": sys.exit()
             else: self.main_window.close()
     async def option_aband(self, widget=None):
         message = await self.main_window.question_dialog("Quitter", "Voulez-vous quitter le logiciel ?", on_result=self.null)
         if message == True:
-            if current_platform == "android":self.exit()
+            if current_platform == "android":sys.exit()
             else: self.main_window.close()
     def création_Créer(self, widget):
         #self.main_window.info_dialog("Debug",f"Chemin: {self.app.paths.data}")
@@ -1004,7 +1004,7 @@ class QuêteduQI(toga.App):
                     await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
                 warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
                 if warn == True:
-                    if current_platform == "android": self.exit()
+                    if current_platform == "android": sys.exit()
                     else: self.main_window.close()
                 else:
                     self.question = random.randint(0, nb_quest)
@@ -1130,7 +1130,7 @@ class QuêteduQI(toga.App):
                     await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
                 warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
                 if warn == True:
-                    if current_platform == "android": self.exit()
+                    if current_platform == "android": sys.exit()
                     else: self.main_window.close()
                 else:
                     self.question = random.randint(0, nb_quest)
@@ -1258,7 +1258,7 @@ class QuêteduQI(toga.App):
                     await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
                 warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
                 if warn == True:
-                    if current_platform == "android": self.exit()
+                    if current_platform == "android": sys.exit()
                     else: self.main_window.close()
                 else:
                     self.question = random.randint(0, nb_quest)
@@ -1306,7 +1306,7 @@ class QuêteduQI(toga.App):
                 await self.main_window.info_dialog(title="Quiz completé!", message="Félicitations, ce quiz a été complété avec un sans faute!", on_result=self.null)
             warn = await self.main_window.question_dialog(title="Quiz completé!", message="Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?", on_result=self.null)
             if warn == True:
-                if current_platform == "android": self.exit()
+                if current_platform == "android": sys.exit()
                 else: self.main_window.close()
             else:
                 self.question = random.randint(0, nb_quest)
@@ -1329,10 +1329,11 @@ class QuêteduQI(toga.App):
                 return True
         return False
     def android_startup(self, widget=None):
-        self.titre.text = "Bienvenue dans\nQuête du QI!"
-        self.aide.text = f"Version {self.version}"
+        img_title = toga.Image(f"{self.paths.app}/resources/title.png")
+        img = toga.ImageView(img_title, style=Pack(width=300, height=150))
+        self.aide.text = f"Bienvenue!\nVersion {self.version}"
         self.bouton1.text, self.bouton1.on_press = "Démarrer", self.android_act
-        self.main_box.add(self.titre, self.aide, self.bouton1)
+        self.main_box.add(img, self.aide, self.bouton1)
     def android_act(self, widget=None):
         self.width_windows = self.main_window.size[0]//11
         self.width_aide = self.main_window.size[0]//18
