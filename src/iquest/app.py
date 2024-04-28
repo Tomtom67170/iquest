@@ -621,7 +621,7 @@ class QuêteduQI(toga.App):
     def help_select_window(self, widget):
         self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, l'utilisateur pourra accéder à une liste de toute les réponses disponible de ce questionnaire et pourra sélectionner celle qui lui semble le mieux!")
     def help_inclusive_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, si la moitié ou plus (qu'importe l'ordre) des mots de la réponse, correspondent à la réponse de la question, la réponse donnée en sera validée\nUtile si le questionnaire contient beaucoup de réponses avec des phrases comprennant plusieurs mots\nNB: Cette fonctionnalitée est expérimentale et peut ne pas fonctionner correctement")
+        self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, si la moitié ou plus (qu'importe l'ordre) des mots de la réponse, correspondent à la réponse de la question, la réponse donnée en sera validée\nUtile si le questionnaire contient beaucoup de réponses avec des phrases comprennant plusieurs mots")
     def help_shift_window(self, widget):
         self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, une réponse pourra être validée, même si l'utilisateur ne respecte pas les majuscules (et minuscules)\nUtile si les majuscules de vos réponses ne sont pas importantes!")
     def help_multiple_window(self, widget):
@@ -1095,12 +1095,14 @@ class QuêteduQI(toga.App):
             don = don.lower()
             resp = self.soluc[self.question].lower()
         if self.proprety[2]:
-            word = []
+            word_resp = don.split(" ")
             treated = resp.split(" ")
+            objectif = len(treated)//2
+            total = 0
             for x in treated:
-                if (x in don.split(" ")) and (not(x in word)):
-                    word += x
-            if len(word) >= len(treated)//2 and len(word) != 0:
+                if x in word_resp:
+                    total += 1
+            if total >= objectif:
                 don = resp
         if don == resp:
             if legit:
