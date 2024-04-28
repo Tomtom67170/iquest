@@ -593,7 +593,8 @@ class QuêteduQI(toga.App):
                     self.main_window.error_dialog(title="Permission non accordée!", message="Vous n'avez pas les permissions de sauvegarder ici! Vérifier que vous avez les droits ou choisissez un autre emplacement!")
             else:
                 await self.main_window.info_dialog(title="Enregistrement réussi!", message="Votre questionnaire a correctement été enregistré!")
-                await self.option_aband()
+                if current_platform == "android":
+                    await self.option_aband()
         else:
             self.main_window.error_dialog(title="Aucun nom de fichier", message="Le fichier n'a pas été enregistré car aucun nom de fichier n'a été entré!")
         if self.mode == "simple": self.création_question_rafraichir()
