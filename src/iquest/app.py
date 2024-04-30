@@ -621,7 +621,7 @@ class QuêteduQI(toga.App):
     def help_select_window(self, widget):
         self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, l'utilisateur pourra accéder à une liste de toute les réponses disponible de ce questionnaire et pourra sélectionner celle qui lui semble le mieux!")
     def help_inclusive_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, si la moitié ou plus (qu'importe l'ordre) des mots de la réponse, correspondent à la réponse de la question, la réponse donnée en sera validée\nUtile si le questionnaire contient beaucoup de réponses avec des phrases comprennant plusieurs mots")
+        self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, si la moitié ou plus (qu'importe l'ordre) des mots de la réponse, correspondent à la réponse de la question, la réponse donnée en sera validée\nASTUCE (Version >= 2.2): Si certains mots ou partie de phrase vous semblent nécessaire d'être mentionné, rédigé ces parties entre **\nUtile si le questionnaire contient beaucoup de réponses avec des phrases comprennant plusieurs mots")
     def help_shift_window(self, widget):
         self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, une réponse pourra être validée, même si l'utilisateur ne respecte pas les majuscules (et minuscules)\nUtile si les majuscules de vos réponses ne sont pas importantes!")
     def help_multiple_window(self, widget):
@@ -1086,8 +1086,8 @@ class QuêteduQI(toga.App):
         self.entré.focus()
     async def lecture_quiz_check(self, widget=None, skip=None):
         don = self.entré.value
-        resp = self.soluc[self.question]
-        if don != self.soluc[self.question]:
+        resp = self.soluc[self.question].replace("*","")
+        if don != resp:
             legit = False
         else:
             legit = True
@@ -1099,16 +1099,38 @@ class QuêteduQI(toga.App):
             treated = resp.split(" ")
             objectif = len(treated)//2
             total = 0
+            important_word = True
+            list_important = []
+            state_search = False
+            actual_word = ""
+            #vérification des mots important
+            #   on recherche les mots importants
+            for x in self.soluc[self.question]:
+                if x == "*":
+                    state_search = not(state_search)
+                else:
+                    if state_search:
+                        actual_word += x
+                    elif actual_word != "":
+                        list_important.append(actual_word)
+                        actual_word = ""
+            #vérification de la proportion des mots juste
+            for x in list_important:
+                if x in don:
+                    pass
+                else:
+                    important_word = False
+                    break
             for x in treated:
                 if x in word_resp:
                     total += 1
-            if total >= objectif:
+            if total >= objectif and important_word:
                 don = resp
         if don == resp:
             if legit:
                 await self.main_window.info_dialog(title="Bonne réponse", message="Excellente réponse!", on_result=self.null)
             else:
-                await self.main_window.info_dialog(title="Bonne réponse", message=f"Attention toutefois, la réponse exacte était: {self.soluc[self.question]}")
+                await self.main_window.info_dialog(title="Bonne réponse", message=f"Attention toutefois, la réponse exacte était: {resp}")
             self.essaie = 2
             self.question_passé.append(self.question)
             if self.global_proprety == []:
@@ -1126,7 +1148,7 @@ class QuêteduQI(toga.App):
                 if (self.proprety[4] and skip != None) or (self.proprety[5] and self.proprety[4]):
                     await self.main_window.error_dialog("Mauvaise réponse", "Vous avez épuisé le nombre d'essais\nNous allons passé à la question suivante", on_result=self.null)
                 else:
-                    await self.main_window.error_dialog(title="Mauvaise réponse", message=f"La bonne réponse est: {self.soluc[self.question]}\nNous allons passé à la question suivante", on_result=self.null)
+                    await self.main_window.error_dialog(title="Mauvaise réponse", message=f"La bonne réponse est: {resp}\nNous allons passé à la question suivante", on_result=self.null)
                 self.essaie = self.proprety[7]
                 if self.global_proprety == []:
                     await self.lecture_quiz_test()
