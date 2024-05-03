@@ -3,9 +3,10 @@ import toga.paths
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
 from toga.platform import current_platform
-if current_platform == "android":
-    from android.content import Intent
-    from java import jarray, jbyte
+if os.name == "posix":
+    if current_platform == "android":
+        from android.content import Intent
+        from java import jarray, jbyte
 class QuêteduQI(toga.App):
     async def android_read(self, widget=None) -> bytes:
         fileChose = Intent(Intent.ACTION_GET_CONTENT)
@@ -218,7 +219,7 @@ class QuêteduQI(toga.App):
                 self.number_essai = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
                 self.label_essai = toga.Label(text=f"Nombre d'essais autorisé par question\nActuellement réglé sur: {self.proprety[7]} essais", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER))
                 help_number_essai = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_number_essai)
-                self.number_essai_slider = toga.Slider(style=Pack(width=300), min=0, max=10, tick_count=11, on_release=self.change_check)
+                self.number_essai_slider = toga.Slider(style=Pack(width=300), min=1, max=10, tick_count=10, on_release=self.change_check)
                 self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value, self.number_essai_slider.value = self.proprety[1:]
                 self.select_canva.add(self.checkbox_select, help_select)
                 self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
