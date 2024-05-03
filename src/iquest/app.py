@@ -354,7 +354,7 @@ class QuêteduQI(toga.App):
         self.mode = "multi"
         self.change_state_nav(True)
         if self.global_proprety == []:
-            self.global_proprety = ["multi",["simple", False, False, False],["QCM", False, False], ["true/false"]]
+            self.global_proprety = ["multi",["simple", False, False, False, False, False, False, 3],["QCM", False, False], ["true/false"]]
         #self.option_def_menu()
         if self.page == len(self.quest):
             self.option_défintion()
@@ -455,7 +455,7 @@ class QuêteduQI(toga.App):
         self.bouton2.text, self.bouton2.on_press = "Terminer", self.save
         self.bouton3.style.update(font_family="Calibri light", font_size=12, text_align=CENTER, width=300)
         self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
-        self.desc.style.update(color="#000000")
+        del self.desc.style.color
         self.nav = toga.Box(Pack(direction=ROW))
         self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
@@ -955,7 +955,7 @@ class QuêteduQI(toga.App):
                     await self.lecture_truefalse_test()
                 elif self.proprety[0] == "multi":
                     self.global_proprety = self.proprety
-                    await self.création_multi_checker()
+                    await self.lecture_multi_check()
         else:
             self.fichier = await self.main_window.open_file_dialog(title="Ouvrir un questionnaire", file_types=["json"], on_result=self.lecture_load_selected)
     async def lecture_load_selected(self, widget=None, dontknown=None):
@@ -1051,7 +1051,7 @@ class QuêteduQI(toga.App):
             else:self.desc.text=text
             self.desc.style.update(color="#FF0000")
         else:
-            self.desc.style.update(color="#000000")
+            del self.desc.style.color
         self.entré = toga.TextInput(style=Pack(font_family = "Calibri light", font_size = 12, width=300), on_confirm=self.lecture_quiz_check)
         self.bouton1.text, self.bouton1.on_press = "Valider", self.lecture_quiz_check
         self.passer = toga.Button(text="Passer",on_press=self.option_skip, style=Pack(width=300, font_family="Calibri light", font_size=12, padding=(0, 0, 5, 0)))
@@ -1201,7 +1201,7 @@ class QuêteduQI(toga.App):
             if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap(question, width=self.width_aide))
             else:self.aide.text=question
             desc_text = "Cliquez sur la bonne réponse"
-            self.desc.style.update(color="#000000")
+            del self.desc.style.color
             if self.proprety[2]:
                 desc_text += f"\nIl y a {len(self.rep[self.num_question])} réponse(s) possible(s)"
             if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(desc_text), width=self.width_windows)
@@ -1224,7 +1224,7 @@ class QuêteduQI(toga.App):
             if current_platform == "android": self.aide.text = "\n".join(textwrap.wrap(question, width=self.width_aide))
             else: self.aide.text = question
             desc_text = "Sélectionner une ou plusieurs réponse qui vous semble correct, en les cochants\npuis appuyez sur \"Confirmer\" pour lancer l'examination de votre réponse"
-            self.desc.style.update(color="#000000")
+            del self.desc.style.color
             if self.proprety[2]:
                 desc_text += f"\n{len(self.rep[self.num_question])} réponse(s) est(sont) attendu(s)"
             if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(text=str(desc_text), width=self.width_windows))
@@ -1309,7 +1309,7 @@ class QuêteduQI(toga.App):
         else:self.aide.text=self.quest[self.question]
         if current_platform == "android" : self.desc.text = "\n".join(textwrap.wrap("Active la coche si tu penses que l'affirmation est juste! Pour valider la réponse appuyer sur \"Valider\"", width=self.width_windows))
         else:self.desc.text = "Active la coche si tu penses que l'affirmation est juste! Pour valider la réponse appuyer sur \"Valider\""
-        self.desc.style.update(color="#000000")
+        del self.desc.style.color
         self.entré_box = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
         self.entré_rep = toga.Switch(style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding_top=10), text="Activer si vrai")
         self.entré_box.add(self.entré_rep)
