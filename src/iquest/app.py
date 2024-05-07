@@ -1137,6 +1137,11 @@ class QuêteduQI(toga.App):
     async def lecture_quiz_check(self, widget=None, skip=None):
         don = self.entré.value
         resp = self.soluc[self.question].replace("*","")
+        if don[-1] == " ":
+            temp = ""
+            for x in don[:-1]:
+                temp += x
+            don = temp
         if don != resp:
             legit = False
         else:
