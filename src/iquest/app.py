@@ -3,10 +3,9 @@ import toga.paths
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
 from toga.platform import current_platform
-if os.name == "posix":
-    if current_platform == "android":
-        from android.content import Intent
-        from java import jarray, jbyte
+if current_platform == "android":
+    from android.content import Intent
+    from java import jarray, jbyte
 class QuêteduQI(toga.App):
     async def android_read(self, widget=None) -> bytes:
         fileChose = Intent(Intent.ACTION_GET_CONTENT)
@@ -59,6 +58,7 @@ class QuêteduQI(toga.App):
         self.len_proprety_quiz = 8
         self.len_proprety_QCM = 3
         #version = 2.0
+        self.global_option = [self.version, False]
         self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, flex=1))
 
         self.main_window = toga.MainWindow(title=self.formal_name)
@@ -84,6 +84,15 @@ class QuêteduQI(toga.App):
             self.option_main()
         else:
             self.android_startup()
+        if not(os.path.exists(f"{self.paths.data}")):
+            os.makedirs(self.paths.data)
+        if not(os.path.exists(f"{self.paths.data}\\config.txt")):
+            self.save_settings()
+        else:
+            with open(f"{self.paths.data}\\config.txt", 'r') as fichier:
+                self.global_option = fichier.read().splitlines()
+            if self.version != self.global_option[0]:
+                self.save_settings()
     def error1(self, widget):
         self.main_window.error_dialog("Erreur", "Cette action n'est pas possible pour le moment! Veuillez entrer au moins une question puis une réponse!")
     def error2(self, widget):
@@ -139,16 +148,21 @@ class QuêteduQI(toga.App):
         self.bouton1.style.update(width=300, padding=(20, 0, 5, 0), font_family="Calibri light", font_size=12)
         self.bouton3.style.update(width=300, padding=(5, 0, 20, 0), font_family="Calibri light", font_size=12)
         self.bouton2.style.update(width=300, font_family="Calibri light", font_size=12)
+        # if self.global_option[1]:
+        #     for x in [self.titre, self.aide, self.desc, self.bouton1, self.bouton2, self.bouton3]:
+        #         x.style.update(color="#FFFFFF", background_color="#000000")
+        #     self.main_box.style.background_color = "#000000"
+        #     self.main_box.refresh()
     def option_taille(self, widget=None):
         self.main_window.info_dialog("Debug",f"Taille de la fenêtre: {self.main_window.size}")
     async def option_skip(self, widget=None):
         self.essaie = 0
         await self.lecture_quiz_check(skip=True)
     def option_def_menu(self, widget=None):
-        file = toga.Group("Fichier")
-        action = toga.Group("Action")
+        file = toga.Group("Fichier", order=0)
+        action = toga.Group("Action", order=1)
         debug = toga.Group("Debug")
-        nav = toga.Group("Naviguation")
+        nav = toga.Group("Naviguation", order=2)
         cmd4 = toga.Command(self.save, "Enregistrer", tooltip="Enregistrer votre questionnaire", group=file, order=1, shortcut=toga.Key.MOD_1 + 's')
         cmd5 = toga.Command(self.save_to, "Enregistrer sous", tooltip="Choisir un emplacement de sauvegarde", group=file, order=2, shortcut=toga.Key.MOD_1 + toga.Key.SHIFT + 's')
         cmd1 = toga.Command(self.création_Créer, "Créer quiz", tooltip="Lancer la création d'un quiz", group=action, order=1, shortcut=toga.Key.MOD_1 + 'n')
@@ -156,12 +170,14 @@ class QuêteduQI(toga.App):
         cmd3 = toga.Command(self.lecture_load, "Importer quiz", tooltip="Faîtes vous testé en important un quiz", group=action, order=3, shortcut=toga.Key.MOD_1 + 'o')
         cmd6 = toga.Command(self.option_reset, "Menu", tooltip="Accéder au menu", group=action, order=4)
         cmd7 = toga.Command(self.option_taille, "Taille", tooltip="Afficher la taille de la fenêtre", group=debug)
+        cmd9 = toga.Command(self.debug_function, "debug_function", group=debug)
+        cmd8 = toga.Command(self.option_soft, "Options du logiciel", tooltip="Afficher les options généraux du logiciel", group=file)
         self.next_page = toga.Command(self.nav_next, "Page suivante", tooltip="Passez à la page suivante", group=nav, shortcut=toga.Key.MOD_1 + toga.Key.RIGHT)
         self.prev_page = toga.Command(self.nav_previous, "Page précédente", tooltip="Passer à la page précédente", group=nav, shortcut=toga.Key.MOD_1 + toga.Key.LEFT)
         self.suppr = toga.Command(self.nav_sup, "Supprimer", tooltip="Supprimer la question", group=nav, shortcut=toga.Key.DELETE)
         if current_platform == "linux":
             self.suppr.shortcut = toga.Key.MOD_1 + 'e'
-        if current_platform == "windows" or current_platform == "linux":self.commands.add(cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, self.next_page, self.prev_page, self.suppr)
+        if current_platform == "windows" or current_platform == "linux":self.commands.add(cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, self.next_page, self.prev_page, self.suppr)
         if current_platform != "windows": self.main_window.toolbar.add(cmd1, cmd2, cmd3, cmd5)
     def option_quit(self, widget=None):
         if current_platform == "android":
@@ -310,6 +326,36 @@ class QuêteduQI(toga.App):
                 self.main_box.add(title_other)
             close = toga.Button(text="Quitter options", style=Pack(font_family="Calibri Light", font_size=12, width=300), on_press=lambda widget: self.close_option())
             self.main_box.add(close)
+    def debug_function(self, widget=None):
+        self.main_window.info_dialog("Debug",f"Type de self.version: {type(self.version)}")
+    def option_soft(self, widget=None):
+        options_label = ["Mode sombre"]
+        functions_name = ["dark"]
+        title = toga.Label("Options du logiciel", style=Pack(font_family="Calibri Light", font_size=30, text_align=CENTER, padding=(0, 0, 30, 0)))
+        if current_platform != "android":
+            self.options_soft_window = toga.Window(title="Options de quiz", on_close=self.close_soft_settings)
+            self.soft_main_box = toga.Box(style=Pack(alignment=CENTER, text_align=CENTER, direction=COLUMN))
+            self.options_soft_window.content = self.soft_main_box
+            self.soft_main_box.add(title)
+            self.options_soft_window.show()
+        else:
+            self.option_défintion()
+            self.main_box.add(title)
+        #Ajout des switchs
+        for y, x in enumerate(options_label):
+            box = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+            to_add = toga.Switch(x, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER), on_change=lambda widget: self.change_soft_settings(widget, functions_name[y]), value=bool(self.global_option[y + 1]))
+            box.add(to_add)
+            if current_platform != "android":
+                self.soft_main_box.add(box)
+            else:
+                self.main_box.add(box)
+        #Ajout du bouton pour quitter
+        quit_button = toga.Button("Quitter options", style=Pack(font_size=12, font_family="Calibri light", text_align=CENTER, padding=(20, 0, 0, 0)), on_press=self.close_soft_settings)
+        if current_platform != "android":
+             self.soft_main_box.add(quit_button)
+        else:
+            self.main_box.add(quit_button)
     def null(self, widget=None, var=None):
         pass
     async def option_quit_save(self, widget):
@@ -489,6 +535,9 @@ class QuêteduQI(toga.App):
     def change_check_QCM(self, widget):
         self.proprety = ["QCM", self.mutiple_switch.value, self.number_rep_switch.value]
         if self.mode == "multi":self.global_proprety[2] = self.proprety
+    def change_soft_settings(self, widget, param1):
+        if param1 == "dark":
+            self.global_option[1] = widget.value
     def création_question_soluc(self, widget):
         actuel = self.entré.value
         if actuel == "":
@@ -1378,5 +1427,16 @@ class QuêteduQI(toga.App):
         if current_platform != "android":
             for x in [self.next_page, self.prev_page, self.suppr]:
                 x.enabled = state
+    def save_settings(self, widget=None):
+        with open(f"{self.paths.data}\\config.txt", 'w') as fichier:
+            for x in self.global_option:
+                fichier.write(f"{x}\n")
+    def close_soft_settings(self, widget=None):
+        self.save_settings()
+        if current_platform != "android":
+            self.options_soft_window.close()
+        else:
+            self.option_défintion()
+            self.option_main()
 def main():
     return QuêteduQI(icon="resources/logo.ico")
