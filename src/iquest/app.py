@@ -1124,7 +1124,7 @@ class QuêteduQI(toga.App):
                 while random_index in lst_append:
                     random_index = random.randint(0, len(soluc_list)-1)
                 lst_append.append(random_index)
-                final_help.append(soluc_list[random_index])
+                final_help.append(soluc_list[random_index].replace("*",""))
             self.option_menu = toga.Selection(style=Pack(width=200), items=["Choisir une réponse"]+final_help, value="Choisir une réponse")
             insert_button = toga.Button(text="Insérer cette réponse", on_press= lambda widget: setattr(self.entré, 'value', self.option_menu.value))
             self.help_canva.add(self.option_menu, insert_button)
@@ -1288,19 +1288,19 @@ class QuêteduQI(toga.App):
             self.C_s = toga.Switch(style=Pack(font_size=12), text="")
             self.D_s = toga.Switch(style=Pack(font_size=12), text="")
             if self.global_proprety == []:
-                A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[a_t])
-                B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[b_t])
-                C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[c_t])
-                D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[d_t])
+                self.A_s.text = self.soluc[a_t]
+                self.B_s.text = self.soluc[b_t]
+                self.C_s.text = self.soluc[c_t]
+                self.D_s.text = self.soluc[d_t]
             else:
-                A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][0])
-                B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][1])
-                C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][2])
-                D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][3])
-            a_box.add(A_e, self.A_s)
-            b_box.add(B_e, self.B_s)
-            c_box.add(C_e, self.C_s)
-            d_box.add(D_e, self.D_s)
+                self.A_s.text = self.soluc[self.num_question][0]
+                self.B_s.text = self.soluc[self.num_question][1]
+                self.C_s.text = self.soluc[self.num_question][2]
+                self.D_s.text = self.soluc[self.num_question][3]
+            a_box.add(self.A_s)
+            b_box.add(self.B_s)
+            c_box.add(self.C_s)
+            d_box.add(self.D_s)
             self.bouton2.text, self.bouton2.on_press = "Confirmer", lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check=None))
             self.main_box.add(self.titre, self.aide, self.desc, a_box, b_box, c_box, d_box, self.bouton2, self.bouton1)
         self.bouton1.text, self.bouton1.on_press = "Quitter", self.option_aband
