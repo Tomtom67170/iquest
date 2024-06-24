@@ -526,7 +526,8 @@ class QuêteduQI(toga.App):
                 self.page += 1
             else: 
                 self.soluc[self.page] = actuel
-                self.rep[self.page] = ""
+                if self.mode == "multi":
+                    self.rep[self.page] = ""
             if self.fichier == "":
                 self.change_title_main_window("Sans nom", False)
             else:
@@ -657,7 +658,7 @@ class QuêteduQI(toga.App):
         self.change_state_nav(True)
         self.option_défintion()
         if self.proprety == []:
-            self.proprety = [self.mode, False]
+            self.proprety = [self.mode, False, False]
         if len(self.proprety) < self.len_proprety_QCM:
             while len(self.proprety) < self.len_proprety_QCM:
                 self.proprety.append(False)
