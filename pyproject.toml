@@ -4,7 +4,7 @@ project_name = "Quête du QI"
 bundle = "com.tomservice"
 version = "2.2.1"
 url = "https://tomtom67170.github.io/Testeur_de_connaissance/index.html"
-license = "BSD license"
+license.file = "LICENSE"
 author = "Tomservice"
 author_email = "tomservice.contact@gmail.com"
 
