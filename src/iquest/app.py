@@ -172,6 +172,7 @@ class QuêteduQI(toga.App):
     def option_main(self, widget=None):
         self.fichier = ""
         self.change_state_nav(False)
+        self.on_exit = self.close_window
         self.titre.text = "Menu principal"
         self.aide.text="Comment ça marche?"
         if current_platform == "android":
@@ -1409,5 +1410,12 @@ class QuêteduQI(toga.App):
         else:
             self.main_window.title = f"Quête du QI - {name}*"
         self.save_state = state
+    async def close_window(self, widget=None):
+        if self.save_state == False:
+            message = await self.main_window.confirm_dialog("Quiz non enregistré", "Il y a des modifications non enregistrés concernant votre quiz.\nSouhaiter vous abandonner ces modifications et fermer \"Quête du QI\" ?", self.null)
+            if message == True:
+                self.exit()
+        else:
+            self.exit()
 def main():
     return QuêteduQI(icon="resources/logo.ico")
