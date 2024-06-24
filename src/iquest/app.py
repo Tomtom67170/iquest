@@ -547,6 +547,8 @@ class QuêteduQI(toga.App):
                 self.aide.text = "Choisir un nom\nde fichier"
                 self.desc.text = "\n".join(textwrap.wrap("Veuillez entrer un nom de questionnaire puis appuyez sur \"Sauvegarder\" pour lancer la sauvegarde\nPour modifier un questionnaire précedemment crée, entrez à nouveau son nom, puis validez!", width=self.width_windows))
                 self.entré.value = "Sans nom"
+                if type(self.soluc[self.page]) == bool:
+                    self.main_box.remove(self.truefalse_rep)
                 self.bouton1.on_press, self.bouton1.text = self.file_selected, "Sauvegarder"
                 self.main_window.info_dialog("Restrictions Android", "Dû aux restrictions Android, il n'est pas possible de choisir l'emplacement de sauvegarde du fichier. Les quizs sont sauvegardé dans \"Espace partagé/documents/Quizs/\"")
                 self.main_box.remove(self.bouton2, self.bouton3, self.nav, self.option_button)
