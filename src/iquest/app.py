@@ -314,11 +314,6 @@ class QuêteduQI(toga.App):
             self.main_box.add(close)
     def null(self, widget=None, var=None):
         pass
-    async def option_quit_save(self, widget):
-        warn = await self.main_window.question_dialog("Voulez-vous quitter", "Voulez-vous continuer? Toute données non sauvegardé sera perdu", on_result=self.null)
-        if warn == True:
-            if current_platform == "android": sys.exit()
-            else: self.main_window.close()
     async def option_aband(self, widget=None):
         message = await self.main_window.question_dialog("Quitter", "Voulez-vous quitter le logiciel ?", on_result=self.null)
         if message == True:
@@ -380,7 +375,7 @@ class QuêteduQI(toga.App):
             self.bouton1.text, self.bouton1.on_press = "Créer question", self.création_multi_selected
             self.bouton2.text, self.bouton2.on_press = "Terminer", self.save
             self.bouton3.style.update(font_family="Calibri light", font_size=12, text_align=CENTER, width=300)
-            self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
+            self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_aband
             self.nav = toga.Box(Pack(direction=ROW))
             self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
             self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
@@ -458,7 +453,7 @@ class QuêteduQI(toga.App):
         self.bouton1.text, self.bouton1.on_press = "Valider question", self.création_question_soluc
         self.bouton2.text, self.bouton2.on_press = "Terminer", self.save
         self.bouton3.style.update(font_family="Calibri light", font_size=12, text_align=CENTER, width=300)
-        self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
+        self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_aband
         del self.desc.style.color
         self.nav = toga.Box(Pack(direction=ROW))
         self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
@@ -677,7 +672,7 @@ class QuêteduQI(toga.App):
             self.entré.value = self.quest[self.page]
         self.bouton1.text, self.bouton1.on_press = "Valider question", self.création_QCM_soluc
         self.bouton2.text, self.bouton2.on_press = "Terminer QCM", self.save
-        self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
+        self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_aband
         self.nav = toga.Box(style=Pack(direction = ROW))
         next_button = toga.Button(text="Suivant", on_press=self.nav_next, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         previous_button = toga.Button(text="Précédent", on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
@@ -739,7 +734,7 @@ class QuêteduQI(toga.App):
                 self.D_s.value = self.get_rep("D", self.rep[self.page])
             self.bouton1.text, self.bouton1.on_press = "Valider réponse", self.création_QCM_at_save
             #bouton2.config(text = "Terminer", command=option.null)
-            self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_quit_save
+            self.bouton3.text, self.bouton3.on_press = "Quitter", self.option_aband
             self.main_box.add(self.titre, self.aide, self.a_box, self.b_box, self.c_box, self.d_box, self.desc, self.bouton1, self.bouton3)
             self.A_e.focus()
     def création_QCM_at_save(self, widget):
@@ -819,7 +814,7 @@ class QuêteduQI(toga.App):
         self.bouton1.style.update(font_family="Calibri light", font_size=12)
         self.bouton2.text, self.bouton2.on_press = "Terminer", self.save
         self.bouton2.style.update(font_family="Calibri light", font_size=12)
-        self.bouton3 = toga.Button(text="Quitter", on_press=self.option_quit_save, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER, width=300, padding=(5, 0, 20, 0)))
+        self.bouton3 = toga.Button(text="Quitter", on_press=self.option_aband, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER, width=300, padding=(5, 0, 20, 0)))
         self.nav = toga.Box(Pack(direction=ROW))
         self.del_button = toga.Button(text="Supprimer\nla question", on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.next_button = toga.Button(text="Suivant", on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
