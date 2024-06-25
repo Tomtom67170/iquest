@@ -1155,7 +1155,7 @@ class QuêteduQI(toga.App):
             if legit:
                 await self.main_window.info_dialog(title="Bonne réponse", message="Excellente réponse!", on_result=self.null)
             else:
-                await self.main_window.info_dialog(title="Bonne réponse", message=f"Attention toutefois, la réponse exacte était: {self.soluc[self.question].replace("*","")}\nVous avez soumis: {self.entré.value}")
+                await self.main_window.info_dialog(title="Bonne réponse", message=f"Attention toutefois, la réponse exacte était: {self.soluc[self.question].replace('*','')}\nVous avez soumis: {self.entré.value}")
             self.essaie = 2
             self.question_passé.append(self.question)
             if self.global_proprety == []:
@@ -1173,7 +1173,7 @@ class QuêteduQI(toga.App):
                 if (self.proprety[4] and skip != None) or (self.proprety[5] and self.proprety[4]):
                     await self.main_window.error_dialog("Mauvaise réponse", "Vous avez épuisé le nombre d'essais\nNous allons passé à la question suivante", on_result=self.null)
                 else:
-                    await self.main_window.error_dialog(title="Mauvaise réponse", message=f"La bonne réponse est: {self.soluc[self.question].replace("*","")}\nVous avez soumis: {self.entré.value}\nNous allons passé à la question suivante", on_result=self.null)
+                    await self.main_window.error_dialog(title="Mauvaise réponse", message=f"La bonne réponse est: {self.soluc[self.question].replace('*','')}\nVous avez soumis: {self.entré.value}\nNous allons passé à la question suivante", on_result=self.null)
                 self.essaie = self.proprety[7]
                 if self.global_proprety == []:
                     await self.lecture_quiz_test()
