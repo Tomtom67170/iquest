@@ -7,6 +7,7 @@ if os.name == "posix":
     if current_platform == "android":
         from android.content import Intent
         from java import jarray, jbyte
+#test de fonctionnement
 class QuêteduQI(toga.App):
     async def android_read(self, widget=None) -> bytes:
         fileChose = Intent(Intent.ACTION_GET_CONTENT)
