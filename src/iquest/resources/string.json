@@ -1,0 +1,296 @@
+{
+    "fr":{
+        "error":[
+            "Erreur",
+            "Cette action n'est pas possible pour le moment! Veuillez entrer au moins une question puis une réponse!",
+            "Cette fonctionnalité n'est pas disponible pour le moment! Vous êtes sur une version de dévellopement"
+        ],
+        "def_menu":[
+            "Fichier",
+            "Action",
+            "Debug",
+            "Naviguation",
+            "Enregistrer",
+            "Enregistrer votre questionnaire",
+            "Enregistrer sous",
+            "Choisir une emplacement de sauvegarde",
+            "Créer quiz",
+            "Lancer la création d'un quiz",
+            "Modifier quiz",
+            "Importer un quiz et le modifier",
+            "Importer quiz",
+            "Faîtes vous tester en important un quiz",
+            "Menu",
+            "Accéder au menu",
+            "Taille",
+            "Afficher la taille de la fenêtre",
+            "Page suivante",
+            "Passer à la page suivante",
+            "Page précédente",
+            "Passer à la page précédente",
+            "Supprimer",
+            "Supprimer la question"
+        ],
+        "main":[
+            "Menu principal",
+            "Comment ça marche?",
+            "Quête du QI permet la création et le partage de questionnaire avec plusieurs type proposés\nPour commencer, clickez sur le bouton avec l'étoile pour créer un quiz\nVous pourrez ensuite le sauvegarder, puis le reprendre en appuyant sur le bouton avec le crayon\nEnfin, une fois prêt à être testé, appuyé sur le bouton avec les 3 étoiles de la réussite pour vous faire tester"
+        ],
+        "option_list":[
+            "Options de quiz",
+            "Options du quiz",
+            "Paramètres liés aux questionnaires simples (Cliquer pour en savoir plus)",
+            "Nombre d'essais autorisé par question\nActuellement réglé sur: ",
+            " essais",
+            "Paramètres liés aux QCMs (Cliquer pour en savoir plus)",
+            "Ce type de questionnaire n'a pas d'options",
+            "Quitter options",
+            "Options QCMs",
+            "Pas d'options disponible",
+            "A propos des options sur les questionnaires universels",
+            "Dans les questionnaires universels, si vous souhaitez changer les propriétés d'un autre type de questionnaire, vous devez vous rendre sur une question du type voulu",
+            "Options questions simples"
+        ],
+        "aband":[
+            "Quitter",
+            "Voulez-vous quitter le logiciel ?"
+        ],
+        "créer":[
+            "Sans_titre",
+            "Création d'un quiz",
+            "Quelle type de questionnaire crée?",
+            "Explications:\nLes questions simple sont des quizs où l'utilisateur devra entrer la réponse au clavier\nLes QCM sont des questions où l'utlisateur devra répondre A, B, C ou D",
+            "Questions simples",
+            "QCM (Choix multiples)",
+            "Vrai ou faux",
+            "Questionnaire universel",
+            "Quitter"
+        ],
+        "multi_checker":[
+            "Créer",
+            "Créer une question",
+            "Type de questionnaire",
+            "Dans le menu déroulant, veuillez sélectionner le type de questionnaire que vous voulez créer",
+            "Questions simples",
+            "QCM",
+            "Vrai ou faux",
+            "Créer question",
+            "Terminer",
+            "Quitter",
+            "Supprimer\nla question",
+            "Suivant",
+            "Précédent"
+        ],
+        "question_refresh":[
+            "Questionnaire mis à jour",
+            "Il a été détécté que votre questionnaire a été crée avec une ancienne version du logiciel et n'est plus compatible avec les dernières versions!\nVotre quiz a été mis à jour pour fonctionner sur les dernières versions, veuillez le sauvegarder pour appliquer la mise à jour!",
+            "Créer",
+            "Créer une question",
+            "Modifier",
+            "Modificer une question",
+            "Veuillez entrer une question",
+            "Veuillez indiquez dans le champ ci-dessous votre question\nAppuyer ensuite sur \"Valider question\" pour entrer une réponse",
+            "Valider question",
+            "Terminer",
+            "Quitter",
+            "Supprimer",
+            "Suivant",
+            "Précédent",
+            "Options"
+        ],
+        "change_check":[
+            "Nombre d'essais autorisé par question\nActuellement réglé sur: ",
+            " essais"
+        ],
+        "question_soluc":[
+            "Impossible de continuer",
+            "Aucune question n'a été entré!",
+            "Veuillez entrer une réponse",
+            "Veuillez indiquez dans le champ en dessous la réponse adéquate a votre question\nAppuyer ensuite sur \"Valider question\" pour entrer une autre question\nSi votre quiz est fini, appuyer sur \"Terminer\"\nRépondre \\ pour annuler question"
+        ],
+        "question_question":[
+            "Annuler question",
+            "Êtes vous sur de vouloir annuler votre question?",
+            "Impossible de continuer",
+            "Aucune réponse n'a été entré",
+            "Sans_titre"
+        ],
+        "save":[
+            "Sauvegarder",
+            "Choisir un nom\nde fichier",
+            "Veuillez entrer un nom de questionnaire puis appuyez sur \"Sauvegarder\" pour lancer la sauvegarde\nPour modifier un questionnaire précedemment crée, entrez à nouveau son nom, puis validez!",
+            "Sans_titre",
+            "Restrictions Android",
+            "Dû aux restrictions Android, il n'est pas possible de choisir l'emplacement de sauvegarde du fichier. Les quizs sont sauvegardé dans \"Espace partagé/documents/Quizs/\"",
+            "Sauvegarder le questionnaire",
+            "Sans_titre.json",
+            "Impossible de sauvegarder",
+            "Votre questionnaire est incomplet, assurez vous d'en avoir déjà importé ou crée un"
+        ],
+        "file_selected":[
+            "Fichier enregistré dans un emplacement temporaire",
+            "Dû aux restrictions Android, le fichier n'a pu être écrit dans l'emplacement voulu. Il a été sauvegardé dans un fichier de secours, intitulé le [nom_de_votre_quiz]_temp.json. Veuillez supprimer le fichier d'origine, puis rouvrez ce logiciel pour l'enregistrer avec son nom d'origine!",
+            "Impossible d'enregistrer une version normale et une version de secours du quiz!",
+            "Nous n'avons pas les autorisations pour enregistrer le fichier demandé, et nous n'avons pas les autorisations pour enregistrer un fichier de secours. Veuillez supprimer le fichier de secours où le fichier original pour procéder à l'enregistrement!",
+            "Permission non accordée!",
+            "Vous n'avez pas les permissions de sauvegarder ici! Vérifier que vous avez les droits ou choisissez un autre emplacement!",
+            "Enregistrement réussi!",
+            "Votre questionnaire a correctement été enregistré!",
+            "Aucun nom de fichier",
+            "Le fichier n'a pas été enregistré car aucun nom de fichier n'a été entré!"
+        ],
+        "QCM_question":[
+            "Questionnaire mis à jour",
+            "Il a été détécté que votre questionnaire a été crée avec une ancienne version du logiciel et n'est plus compatible avec les dernières versions!\nVotre quiz a été mis à jour pour fonctionner sur les dernières versions, veuillez le sauvegarder pour appliquer la mise à jour!",
+            "Créer un QCM",
+            "La création d'un QCM se joue en 3 étapes",
+            "Modifier un QCM",
+            "Pour l'instant, vous devez entrer une question",
+            "Valider question",
+            "Terminer QCM",
+            "Quitter",
+            "Suivant",
+            "Précédent",
+            "Supprimer",
+            "Options"
+        ],
+        "QCM_soluc":[
+            "Question incorrecte",
+            "Aucune question n'a été entré! Veuillez en entrer une!",
+            "Créer un QCM",
+            "Vous devez maintenant entrer 4 réponses possibles",
+            "Nous devons maintenant connaitre les 4 réponses possibles\nSi vous voulez créer un QCM avec 2 ou 3 réponses possible uniquement,\nmettez \"rien\" ou un / pour montrer que cela n'est pas une réponse possible",
+            "Vous devez rentrer ci-dessus, les 4 réponses possible avec 1 bonne réponse et 3 mauvaise réponse\nL'utilisateur devra choisir une réponse (en espérant que ce soit la bonne)",
+            "Valider réponse",
+            "Quitter"
+        ],
+        "QCM_at_save":[
+            "Impossible de valider",
+            "Assurez-vous d'avoir remplie tous les champs et d'avoir sélectionné au moins une réponse!",
+            "Rétrocompatibilité indisponible",
+            "Malgré la prise en charge du format JSON, les versions 1.3 et 1.3.1 ne peuvent pas lire les QCMs avec plusieurs réponses possible!\nAssurez-vous de lire le QCM sur une version >= 2.0. Autrement, il ne vous sera pas possible de lire le QCM!",
+            "Sans_titre"
+        ],
+        "truefalse_refresh":[
+            "Créer",
+            "Créer une question",
+            "Modifier",
+            "Modifier une question",
+            "Veuillez entrer une question",
+            "Veuillez indiquez dans le champ ci-dessous votre question\nValidez la coche si votre affirmation est vraie\nAppuyer ensuite sur \"Valider question\" pour créer/modifier votre question",
+            "Valider question",
+            "Terminer",
+            "Quitter",
+            "Supprimer",
+            "Suivant",
+            "Précédent",
+            "Options"
+        ],
+        "truefalse_save":[
+            "Sans_titre",
+            "Question incomplète",
+            "Veuillez entrer une question avant de pouvoir la valider!"
+        ],
+        "load":[
+            "Erreur JSON",
+            "Impossible d'ouvrir ce questionnaire car le fichier JSON est corrompu!",
+            "Erreur de format",
+            "Certaines données présente dans le fichier sont incorrectes! Impossible d'ouvrir le questionnaire!",
+            "Ouvrir un questionnaire"
+        ],
+        "quiz_test":[
+            "Quiz completé!",
+            "Félicitations, ce quiz a été complété avec un sans faute!",
+            "Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?",
+            "Questionnaire obsolète",
+            "Ce questionnaire est expiré et n'est plus compatible avec cette version!\nMettez-le à jour puis réessayer!\nLa mise à jour est automatiquement réalisé lorsque vous enregistrer votre quiz, voulez-vous accéder à l'éditeur de quiz afin de sauvegarder et mettre à jour votre quiz?",
+            "Impossible de lire le quiz",
+            "Votre quiz comporte une erreur de donnée, et ne peux être lu. Modifiez-le dans l'éditeur, puis réessayer!",
+            "Répond à\nla question:",
+            "Répond à la question suivante:",
+            "Répondez dans le champs ci-dessous! Pour valider la réponse appuyer sur \"Valider\"",
+            "Ce questionnaire est concerné par des changements de règle:",
+            "\nSi la moitié des mots de la réponse sont entré, la réponse est validé",
+            "\nLes majuscules et les minuscules n'ont pas d'importance dans la validation de la réponse",
+            "\nLa bonne réponse à la question ne sera pas donné si vous passez la question",
+            " OU que vous épuisé tous vos essais restant",
+            "\nVous obtiendrez la mention \"sans-faute\" de ce quiz même si vous réalisez des erreurs. Seuls passer la question ou écouler son nombre d'essais, annule la mention",
+            "Valider",
+            "Passer",
+            "Quitter",
+            "Choisir une réponse",
+            "Insérer cette réponse",
+            "L'option d'aide à la réponse a été désactivée pour ce questionnaire"
+        ],
+        "quiz_check":[
+            "Bonne réponse",
+            "Excellente réponse!",
+            "Attention toutefois, la réponse exacte était: ",
+            "\nVous avez soumis: ",
+            "Mauvaise réponse",
+            "La réponse donnée est fausse!\nIl vous reste ",
+            " essais\nAttention à l'orthographe, la ponctuation et les majuscules",
+            "Vous avez épuisé le nombre d'essais\nNous allons passé à la question suivante",
+            "La bonne réponse est: ",
+            "\nNous allons passé à la question suivante"
+        ],
+        "QCM_test":[
+            "Quiz completé!",
+            "Félicitations, ce quiz a été complété avec un sans faute!",
+            "Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?",
+            "Questionnaire obsolète",
+            "Ce questionnaire est expiré et n'est plus compatible avec cette version!\nMettez-le à jour puis réessayer!\nLa mise à jour est automatiquement réalisé lorsque vous enregistrer votre quiz, voulez-vous accéder à l'éditeur de quiz afin de sauvegarder et mettre à jour votre QCM?",
+            "Impossible de lire le QCM",
+            "Votre QCM comporte une erreur de donnée, et ne peux être lu. Modifiez-le dans l'éditeur, puis réessayer!",
+            "Choisie\nune réponse",
+            "Choisie une réponse",
+            "Cliquez sur la bonne réponse",
+            "\nIl y a ",
+            " réponse(s) possible(s)",
+            "Sélectionne\nla(les) réponse(s)",
+            "Sélectionne la(les) réponse(s)",
+            "Sélectionner une ou plusieurs réponse qui vous semble correct, en les cochants\npuis appuyez sur \"Confirmer\" pour lancer l'examination de votre réponse",
+            " réponse(s) est(sont) attendu(s)",
+            "Confirmer",
+            "Quitter"
+        ],
+        "QCM_check":[
+            "Bonne réponse",
+            "Excellente réponse!",
+            "Mauvaise réponse",
+            "Ce n'est pas la bonne réponse!\nIl reste 2 essais!",
+            "Ce n'est pas la bonne réponse!\nIl reste 1 essais!",
+            "Ce n'est pas la bonne réponse!\nLa bonne réponse était la case: "
+        ],
+        "truefalse_test":[
+            "Quiz completé!",
+            "Félicitations, ce quiz a été complété avec un sans faute!",
+            "Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?",
+            "Répond à\nla question:",
+            "Répond à la question suivante:",
+            "Active la coche si tu penses que l'affirmation est juste! Pour valider la réponse appuyer sur \"Valider\"",
+            "Valider",
+            "Quitter"
+        ],
+        "truefalse_check":[
+            "Bonne réponse",
+            "Excellente réponse!",
+            "Mauvaise réponse",
+            "Ce n'est pas la bonne réponse\nNous allons passé à la question suivante"
+        ],
+        "lecture_multi":[
+            "Quiz completé!",
+            "Félicitations, ce quiz a été complété avec un sans faute!",
+            "Vous avez répondu juste à toutes les questions du quiz!\nVoulez-vous quitter?"
+        ],
+        "android_startup":[
+            "Bienvenue!\nVersion ",
+            "Démarrer"
+        ],
+        "software_name":"Quête du QI",
+        "close_window":[
+            "Quiz non enregistré",
+            "Il y a des modifications non enregistrés concernant votre quiz.\nSouhaiter vous abandonner ces modifications et fermer \"Quête du QI\" ?"
+        ]
+    }
+}
