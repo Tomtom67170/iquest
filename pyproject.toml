@@ -2,7 +2,7 @@
 [tool.briefcase]
 project_name = "Quête du QI"
 bundle = "com.tomservice"
-version = "2.2.1"
+version = "2.2.2"
 url = "https://tomtom67170.github.io/Testeur_de_connaissance/index.html"
 license.file = "LICENSE"
 author = "Tomservice"
