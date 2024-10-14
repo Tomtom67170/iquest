@@ -198,131 +198,57 @@ class QuêteduQI(toga.App):
     def option_reset(self, widget):
         self.option_défintion()
         self.option_main()
-    def option_list(self, widget=None):
+    def option_list(self, widget=None, refresh=False):
         string = self.strings[self.language]["option_list"]
         if current_platform != "android":
-            self.main_window.hide()
-            self.option_window = toga.Window(title=string[0], on_close=self.close_option)
-            self.option_main_box = toga.Box(style=Pack(alignment=CENTER, text_align=CENTER, direction=COLUMN))
-            self.option_window.content = self.option_main_box
-            option_title = toga.Label(text=string[1], style=Pack(font_family="Calibri Light", font_size=30, text_align=CENTER))
-            self.option_main_box.add(option_title)
-            if self.proprety[0] == "simple":
-                if self.mode == "multi":
-                    title_quiz = toga.Button(text=string[2], style=Pack(font_size=12, text_align=CENTER), on_press=lambda widget: self.main_window.info_dialog(string[10], string[11]))
-                    self.option_main_box.add(title_quiz)
-                self.select_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_select = toga.Switch(text="Aide à la réponse", style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER), on_change=self.change_check)
-                help_select = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press=self.help_select_window)
-                self.inclusive_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_inclusive = toga.Switch(text="L'essentiel compte!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_inclusive = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_inclusive_window)
-                self.shift_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_shift = toga.Switch(text="Pas besoins de majuscule!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_shift = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_shift_window)
-                self.show_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_show_skip = toga.Switch(text="Je le savais!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_show_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_show_skip_window)
-                self.only_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_only_skip = toga.Switch(text="Je veux pas savoir!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_only_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_only_skip_window)
-                self.congrat = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_congrat = toga.Switch(text="Personne n'est parfait!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_congrat = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_congrat)
-                self.number_essai = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.label_essai = toga.Label(text=string[3]+str(self.proprety[7])+string[4], style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER))
-                help_number_essai = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_number_essai)
-                self.number_essai_slider = toga.Slider(style=Pack(width=300), min=1, max=10, tick_count=10, on_release=self.change_check)
-                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value, self.number_essai_slider.value = self.proprety[1:]
-                self.select_canva.add(self.checkbox_select, help_select)
-                self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
-                self.shift_canva.add(self.checkbox_shift, help_shift)
-                self.show_skip.add(self.checkbox_show_skip, help_show_skip)
-                self.only_skip.add(self.checkbox_only_skip, help_only_skip)
-                self.congrat.add(self.checkbox_congrat, help_congrat)
-                self.number_essai.add(self.label_essai, help_number_essai)
-                self.checkbox_only_skip.enabled = self.checkbox_show_skip.value
-                self.option_main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip, self.congrat, self.number_essai, self.number_essai_slider)
-            if self.proprety[0] == "QCM":
+            if not refresh:
+                #Configuration de la fenêtre(collé)
                 self.main_window.hide()
-                if self.mode == "QCM" or self.mode == "multi":
-                    if self.mode == "multi":
-                        title_QCM = toga.Button(text=string[5], style=Pack(font_size=12, text_align=CENTER), on_press=lambda widget: self.main_window.info_dialog(string[10], string[11]))
-                        self.option_main_box.add(title_QCM)
-                self.mutiple_canva = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
-                self.mutiple_switch = toga.Switch(style=Pack(font_family="Calibri light", font_size=12), text="Choix unique", on_change=self.change_check_QCM, value=self.proprety[1])
-                self.help_multiple = toga.Button(style=Pack(font_family="Calibri light", font_size=12), text="?", on_press=self.help_multiple_window)
-                self.mutiple_canva.add(self.mutiple_switch, self.help_multiple)
-                self.number_rep_canva = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
-                self.number_rep_switch = toga.Switch(style=Pack(font_family="Calibri light", font_size=12), text="Indiquer le nombre de réponse", on_change=self.change_check_QCM, value=self.proprety[2])
-                self.help_number_rep = toga.Button(style=Pack(font_family="Calibri light", font_size=12), text="?", on_press=self.help_number_rep_window)
-                self.number_rep_canva.add(self.number_rep_switch, self.help_number_rep)
-                self.option_main_box.add(self.mutiple_canva, self.number_rep_canva)
-            if self.proprety[0] != "simple" and self.proprety[0] != "QCM":
-                title_other = toga.Label(text=string[6], style=Pack(font_size=12, text_align=CENTER))
-                self.option_main_box.add(title_other)
-            close = toga.Button(text=string[7], style=Pack(font_family="Calibri Light", font_size=12, width=300), on_press=lambda widget: self.close_option())
-            self.option_main_box.add(close)
+                self.option_window = toga.Window(title=string[0], on_close=self.close_option)
+                self.option_main_box = toga.Box(style=Pack(alignment=CENTER, text_align=CENTER, direction=COLUMN))
+            else:
+                self.option_main_box = toga.Box(style=Pack(alignment=CENTER, text_align=CENTER, direction=COLUMN))
+            self.option_window.content = self.option_main_box
             self.option_window.show()
         else:
-            self.option_défintion()
-            option_title = toga.Label(text=string[1], style=Pack(font_family="Calibri Light", font_size=30, text_align=CENTER))
-            self.main_box.add(option_title)
-            if self.proprety[0] == "simple":
-                if self.mode == "multi":
-                    title_quiz = toga.Button(text=string[12], style=Pack(font_size=12, text_align=CENTER), on_press=lambda widget: self.main_window.info_dialog(string[10], string[11]))
-                    self.main_box.add(title_quiz)
-                self.select_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_select = toga.Switch(text="Aide à la réponse", style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER), on_change=self.change_check)
-                help_select = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press=self.help_select_window)
-                self.inclusive_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_inclusive = toga.Switch(text="L'essentiel compte!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_inclusive = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_inclusive_window)
-                self.shift_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_shift = toga.Switch(text="Pas besoins de majuscule!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_shift = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_shift_window)
-                self.show_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_show_skip = toga.Switch(text="Je le savais!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_show_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_show_skip_window)
-                self.only_skip = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_only_skip = toga.Switch(text="Je veux pas savoir!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_only_skip = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_only_skip_window)
-                self.congrat = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.checkbox_congrat = toga.Switch(text="Personne n'est parfait!", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_change=self.change_check)
-                help_congrat = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_congrat)
-                self.number_essai = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
-                self.label_essai = toga.Label(text=string[3]+str(self.proprety[7])+string[4], style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER))
-                help_number_essai = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= self.help_number_essai)
-                self.number_essai_slider = toga.Slider(style=Pack(width=300), min=0, max=10, tick_count=11, on_release=self.change_check)
-                self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value, self.number_essai_slider.value = self.proprety[1:]
-                self.select_canva.add(self.checkbox_select, help_select)
-                self.inclusive_canva.add(self.checkbox_inclusive, help_inclusive)
-                self.shift_canva.add(self.checkbox_shift, help_shift)
-                self.show_skip.add(self.checkbox_show_skip, help_show_skip)
-                self.only_skip.add(self.checkbox_only_skip, help_only_skip)
-                self.congrat.add(self.checkbox_congrat, help_congrat)
-                self.number_essai.add(self.label_essai, help_number_essai)
-                self.checkbox_only_skip.enabled = self.checkbox_show_skip.value
-                self.main_box.add(self.select_canva, self.inclusive_canva, self.shift_canva, self.show_skip, self.only_skip, self.congrat, self.number_essai, self.number_essai_slider)
-            if self.proprety[0] == "QCM":
-                if self.mode == "QCM" or self.mode == "multi":
-                    if self.mode == "multi":
-                        title_QCM = toga.Button(text=string[8], style=Pack(font_size=12, text_align=CENTER), on_press=lambda widget: self.main_window.info_dialog(string[10], string[11]))
-                        self.main_box.add(title_QCM)
-                self.mutiple_canva = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
-                self.mutiple_switch = toga.Switch(style=Pack(font_family="Calibri light", font_size=12), text="Choix unique", on_change=self.change_check_QCM, value=self.proprety[1])
-                self.help_multiple = toga.Button(style=Pack(font_family="Calibri light", font_size=12), text="?", on_press=self.help_multiple_window)
-                self.mutiple_canva.add(self.mutiple_switch, self.help_multiple)
-                self.number_rep_canva = toga.Box(style=Pack(direction=ROW, alignment=CENTER))
-                self.number_rep_switch = toga.Switch(style=Pack(font_family="Calibri light", font_size=12), text="Indiquer le nombre de réponse", on_change=self.change_check_QCM, value=self.proprety[2])
-                self.help_number_rep = toga.Button(style=Pack(font_family="Calibri light", font_size=12), text="?", on_press=self.help_number_rep_window)
-                self.number_rep_canva.add(self.number_rep_switch, self.help_number_rep)
-                self.main_box.add(self.mutiple_canva, self.number_rep_canva)
-            if self.proprety[0] != "simple" and self.proprety[0] != "QCM":
-                title_other = toga.Label(text=string[9], style=Pack(font_size=12, text_align=CENTER))
-                self.main_box.add(title_other)
-            close = toga.Button(text=string[7], style=Pack(font_family="Calibri Light", font_size=12, width=300), on_press=lambda widget: self.close_option())
-            self.main_box.add(close)
+            self.main_box = toga.Box(style=Pack(alignment=CENTER, text_align=CENTER, direction=COLUMN))
+            self.main_window.content = self.main_box
+            self.option_main_box = self.main_box
+        #Mise en place des switch
+        if self.proprety[0] == "simple":
+            title = string[1]
+            option_str = string[13]
+        elif self.proprety[0] == "QCM":
+            title = string[8]
+            option_str = string[14]
+        elif self.proprety[0] == "true/false":
+            title = string[12]
+            option_str = []
+        if current_platform != "android":
+            self.option_main_box.add(toga.Label(text=title, style=Pack(font_family="Calibri Light", font_size=30, text_align=CENTER)))
+        else:self.option_main_box.add(toga.Label(text="\n".join(textwrap.wrap(title, width=self.width_windows)), style=Pack(font_family="Calibri Light", font_size=30, text_align=CENTER)))
+        self.switch_ids = []
+        self.helps = []
+        for i in range(len(option_str)):
+            current_switch = toga.Switch(option_str[i], style=Pack(font_size=12, text_align=CENTER), on_change=lambda widget: self.change_check(widget, "simple"), value=self.proprety[i+1])
+            current_help = toga.Button("?", style=Pack(font_size=11, text_align=CENTER), on_press=lambda widget: self.help_window(widget))
+            current_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+            current_canva.add(current_switch, current_help)
+            self.option_main_box.add(current_canva)
+            self.switch_ids.append(current_switch.id)
+            self.helps.append(current_help.id)
+            if self.mode == "simple" and i == 4:#cas spécifique de "Je veux pas savoir!"
+                current_switch.enabled = self.proprety[4]
+        #Ajout des non switchs
+        if self.proprety[0] == "simple":
+            help_number_essai = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press= lambda widget: self.help_window(widget, -1))
+            self.helps.append(help_number_essai.id)
+            number_essai = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
+            number_essai.add(toga.Label(text=string[3]+str(self.proprety[-1])+string[4], style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER)), help_number_essai)
+            self.option_main_box.add(number_essai, toga.Slider(style=Pack(width=300), min=1, max=10, tick_count=10, on_release=self.change_check, value=self.proprety[-1]))
+        if option_str == []:
+            self.option_main_box.add(toga.Label(string[6] if current_platform != "android" else "\n".join(textwrap.wrap(string[6], self.width_aide)),style=Pack(font_size=12, text_align=CENTER)))
+        self.option_main_box.add(toga.Button(text=string[7], style=Pack(font_family="Calibri Light", font_size=12, width=300), on_press=lambda widget: self.close_option()))
     def null(self, widget=None, var=None):
         pass
     async def option_aband(self, widget=None):
@@ -386,6 +312,8 @@ class QuêteduQI(toga.App):
                     self.type_select.value = string[5]
                 elif type(last_question) == bool:
                     self.type_select.value = string[6]
+                else:
+                    self.main_window.error_dialog(string[13],string[14])
             self.bouton1.text, self.bouton1.on_press = string[7], self.création_multi_selected
             self.bouton2.text, self.bouton2.on_press = string[8], self.save
             self.bouton3.style.update(font_family="Calibri light", font_size=12, text_align=CENTER, width=300)
@@ -408,6 +336,8 @@ class QuêteduQI(toga.App):
                 self.création_QCM_question()
             elif type(last_question) == bool:
                 self.création_truefalse_rafraichir()
+            else:
+                self.main_window.error_dialog(string[13],string[14])
         # self.select_canva = toga.Box(style=Pack(direction=ROW, text_align=CENTER))
         # self.checkbox_select = toga.Switch(text="Aide à la réponse", style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER), on_change=self.change_check)
         # help_select = toga.Button(text="?", style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER), on_press=self.help_select_window)
@@ -449,8 +379,8 @@ class QuêteduQI(toga.App):
             while len(self.proprety) < self.len_proprety_quiz:
                 self.proprety.append(False)
             self.main_window.info_dialog(string[0], string[1])
-        if self.proprety[7] == False:
-            self.proprety[7] = 3
+        if self.proprety[-1] == False:
+            self.proprety[-1] = 3
         self.option_défintion()
         #self.option_def_menu()
         if self.page == len(self.quest): 
@@ -488,19 +418,24 @@ class QuêteduQI(toga.App):
         )
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_button)
         self.entré.focus()
-    def change_check(self, widget):
-        string = self.strings[self.language]["change_check"]
-        self.proprety = ["simple", self.checkbox_select.value, self.checkbox_inclusive.value, self.checkbox_shift.value, self.checkbox_show_skip.value, self.checkbox_only_skip.value, self.checkbox_congrat.value, int(self.number_essai_slider.value)]
-        if self.proprety[4] == False:
-            self.checkbox_only_skip.enabled = False
-        else:
-            self.checkbox_only_skip.enabled = True
-        self.label_essai.text = string[0]+str(self.proprety[7])+string[1]
-        if current_platform != "android":
-            self.option_main_box.refresh()
-        else:
-            self.main_box.refresh()
-        if self.mode == "multi":self.global_proprety[1] = self.proprety
+    def change_check(self, widget, mode=None):
+        """
+        Widget: Entitée contenant la checkbox
+        mode: Valeur contenant self.mode
+        """
+        if type(widget) == toga.Slider:
+            self.proprety[-1] = int(widget.value)
+            self.option_list(refresh=True)
+            return
+        for i in range(len(self.switch_ids)):
+            if self.switch_ids[i] == widget.id:
+                #Indice de switch trouvé
+                index = i + 1
+                break
+        #on vérifie que "Je le savais", a été modifié:
+        self.proprety[index] = widget.value
+        if index == 4 and self.mode == "simple": #index de "Je le savais!"
+            self.option_list(refresh=True)
     def change_check_QCM(self, widget):
         self.proprety = ["QCM", self.mutiple_switch.value, self.number_rep_switch.value]
         if self.mode == "multi":self.global_proprety[2] = self.proprety
@@ -652,24 +587,19 @@ class QuêteduQI(toga.App):
                 self.fichier = await self.main_window.save_file_dialog(title="Sauvegarder le questionnaire", suggested_filename="Sans nom.json" ,file_types=["json"], on_result=self.file_selected)
         else:
             self.main_window.error_dialog("Impossible de sauvegarder", "Votre questionnaire est incomplet, assurez vous d'en avoir déjà importé ou crée un") 
-    def help_select_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, l'utilisateur pourra accéder à une liste de toute les réponses disponible de ce questionnaire et pourra sélectionner celle qui lui semble le mieux!")
-    def help_inclusive_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, si la moitié ou plus (qu'importe l'ordre) des mots de la réponse, correspondent à la réponse de la question, la réponse donnée en sera validée\nASTUCE (Version >= 2.2): Si certains mots ou partie de phrase vous semblent nécessaire d'être mentionné, rédigé ces parties entre **\nUtile si le questionnaire contient beaucoup de réponses avec des phrases comprennant plusieurs mots")
-    def help_shift_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si vous activez cette option, lors du test pour ce questionnaire, une réponse pourra être validée, même si l'utilisateur ne respecte pas les majuscules (et minuscules)\nUtile si les majuscules de vos réponses ne sont pas importantes!")
-    def help_multiple_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, l'utilisateur devra choisir une réponse parmi les 4 disponibles, si il choisit une des bonnes réponses, la question en sera validée.\nLorsque l'option est désactivée, l'utilisateur devra sélectionner toutes les réponses qu'il juge correct, ATTENTION: Il devra valider TOUTES les bonnes réponses")
-    def help_number_rep_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, l'utilisateur sera tenu informé du nombre de réponses possibles")
-    def help_show_skip_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, lorsque l'utilisateur passera une question, la bonne réponse ne lui sera pas dévoillée")
-    def help_only_skip_window(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="(Cette option ne s'applique que si l'option \"Je le savais!\" est activée) Si cette option est activée, l'utilisateur ne verra également pas la réponse si il a utilisé tout ces essais, en plus de ne pas pouvoir la connaître en passant la question!")
-    def help_congrat(self, widget):
-        self.main_window.info_dialog(title="Aide de l'option", message="Si cette option est activée, le questionnaire sera considéré comme étant un \"sans-faute\" même si l'utilisateur fait des fautes. Seuls passer la question ou être à court d'essais, annule la mention \"sans-faute\"")
-    def help_number_essai(self, widget):
-        self.main_window.info_dialog("Aide de l'option", "Par défault sur 3, ce paramètre permet de modifier le nombre d'essais par question autorisé à l'utilisateur (réglable de 0 à 10 essais)")
+    def help_window(self, widget, pre_index=None):
+        string = self.strings[self.language]["help"]
+        if pre_index == None:
+            for i in range(len(self.switch_ids)):
+                if self.helps[i] == widget.id:
+                    #Indice de switch trouvé
+                    index = i
+                    break
+        if self.proprety[0] == "simple":
+            str_bank = string[1]
+        elif self.proprety[0] == "QCM":
+            str_bank = string[2]
+        self.main_window.info_dialog(title=string[0], message=str_bank[index if pre_index==None else pre_index])
     def création_QCM_question(self, widget=None):
         string = self.strings[self.language]["QCM_question"]
         self.phase = "quest"
@@ -700,14 +630,14 @@ class QuêteduQI(toga.App):
         self.bouton3.text, self.bouton3.on_press = string[8], self.option_aband
         self.nav = toga.Box(style=Pack(direction = ROW))
         next_button = toga.Button(text=string[9], on_press=self.nav_next, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
-        previous_button = toga.Button(text=string[10], on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
+        self.previous_button = toga.Button(text=string[10], on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         del_button = toga.Button(text=string[11], on_press=self.nav_sup, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.option_button = toga.Button(text=string[12], style=Pack(font_family="Calibri light", font_size=11, text_align=CENTER, width=300, padding=(20, 0, 0, 0)), on_press=self.option_list)
-        if self.page == 0: previous_button.enabled = False
-        else: previous_button.enabled = True
+        if self.page == 0: self.previous_button.enabled = False
+        else: self.previous_button.enabled = True
         if self.page == len(self.quest): next_button.enabled, del_button.enabled = False, False
         else: next_button.enabled, del_button.enabled = True, True
-        self.nav.add(previous_button, del_button, next_button)
+        self.nav.add(self.previous_button, del_button, next_button)
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_button)
         self.entré.focus()
     def création_QCM_soluc(self, widget):
@@ -1114,7 +1044,7 @@ class QuêteduQI(toga.App):
         self.bouton2.text, self.bouton2.on_press = string[17], self.option_aband
         self.help_canva = toga.Box(style=Pack(direction = ROW))
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.passer, self.bouton2)
-        self.essaie = self.proprety[7] - 1
+        self.essaie = self.proprety[-1] - 1
         if self.global_proprety == []:
             soluc_list = self.soluc
         else:
@@ -1206,7 +1136,7 @@ class QuêteduQI(toga.App):
                     await self.main_window.error_dialog(string[4], string[7], on_result=self.null)
                 else:
                     await self.main_window.error_dialog(title=string[4], message=string[8]+self.soluc[self.question].replace('*','')+string[3]+self.entré.value+string[9], on_result=self.null)
-                self.essaie = self.proprety[7]
+                self.essaie = self.proprety[-1]
                 if self.global_proprety == []:
                     await self.lecture_quiz_test()
                 else:

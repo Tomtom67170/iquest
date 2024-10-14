@@ -45,11 +45,13 @@
             "Paramètres liés aux QCMs (Cliquer pour en savoir plus)",
             "Ce type de questionnaire n'a pas d'options",
             "Quitter options",
-            "Options QCMs",
+            "Options du QCM",
             "Pas d'options disponible",
             "A propos des options sur les questionnaires universels",
             "Dans les questionnaires universels, si vous souhaitez changer les propriétés d'un autre type de questionnaire, vous devez vous rendre sur une question du type voulu",
-            "Options questions simples"
+            "Options Vrai/Faux",
+            ["Aide à la réponse", "L'essentiel compte!", "Pas besoins de majuscules!", "Je le savais!", "Je veux pas savoir", "Personne n'est parfait"],
+            ["Choix unique", "Indiquer le nombre de réponse"]
         ],
         "aband":[
             "Quitter",
@@ -79,7 +81,9 @@
             "Quitter",
             "Supprimer\nla question",
             "Suivant",
-            "Précédent"
+            "Précédent",
+            "Erreur d'identification du type de questionnaire",
+            "Une erreur est survenu et Quête du QI n'a pu identifier le type de quiz de la question que vous tentez de charger!\nVeuillez vérifier le fichier de questionnaire et vous assurez d'utiliser la dernière version de Quête du QI!"
         ],
         "question_refresh":[
             "Questionnaire mis à jour",
@@ -291,6 +295,22 @@
         "close_window":[
             "Quiz non enregistré",
             "Il y a des modifications non enregistrés concernant votre quiz.\nSouhaiter vous abandonner ces modifications et fermer \"Quête du QI\" ?"
+        ],
+        "help":[
+            "Aide de l'option",
+            [
+                "Si vous activez cette option, lors du test pour ce questionnaire, l'utilisateur pourra accéder à une liste de toute les réponses disponible de ce questionnaire et pourra sélectionner celle qui lui semble le mieux!",
+                "Si vous activez cette option, lors du test pour ce questionnaire, si la moitié ou plus (qu'importe l'ordre) des mots de la réponse, correspondent à la réponse de la question, la réponse donnée en sera validée\nASTUCE (Version >= 2.2): Si certains mots ou partie de phrase vous semblent nécessaire d'être mentionné, rédigé ces parties entre **\nUtile si le questionnaire contient beaucoup de réponses avec des phrases comprennant plusieurs mots",
+                "Si vous activez cette option, lors du test pour ce questionnaire, une réponse pourra être validée, même si l'utilisateur ne respecte pas les majuscules (et minuscules)\nUtile si les majuscules de vos réponses ne sont pas importantes!",
+                "Si cette option est activée, lorsque l'utilisateur passera une question, la bonne réponse ne lui sera pas dévoillée",
+                "(Cette option ne s'applique que si l'option \"Je le savais!\" est activée) Si cette option est activée, l'utilisateur ne verra également pas la réponse si il a utilisé tout ces essais, en plus de ne pas pouvoir la connaître en passant la question!",
+                "Si cette option est activée, le questionnaire sera considéré comme étant un \"sans-faute\" même si l'utilisateur fait des fautes. Seuls passer la question ou être à court d'essais, annule la mention \"sans-faute\"",
+                "Permet de modifier le nombre d'essai donné à l'utilisateur lors du test"
+            ],
+            [
+                "Si cette option est activée, l'utilisateur devra choisir une réponse parmi les 4 disponibles, si il choisit une des bonnes réponses, la question en sera validée.\nLorsque l'option est désactivée, l'utilisateur devra sélectionner toutes les réponses qu'il juge correct, ATTENTION: Il devra valider TOUTES les bonnes réponses",
+                "Si cette option est activée, l'utilisateur sera tenu informé du nombre de réponses possibles"
+            ]
         ]
     }
 }
