@@ -785,7 +785,6 @@ class QuêteduQI(toga.App):
         if current_platform == "android":
             suite = True
             content = await self.android_read()
-            #self.main_window.info_dialog("Debug", "Content: "+str(content)+"\nContent décodé: "+content.decode("utf_8"))
             try:
                 dico = json.loads(str(content.decode("utf-8")))
             except json.JSONDecodeError:
@@ -812,66 +811,14 @@ class QuêteduQI(toga.App):
                 elif self.proprety[0] == "multi":
                     self.global_proprety = self.proprety
                     self.création_multi_checker()
-            #self.main_window.info_dialog("Debug", f"Résultat de content: {content}")
-            #if reponse.returncode == 0:
-            #    self.main_window.info_dialog("Debug", f"Contenu de la fonction ls:{reponse.stdout}")
-            #else:
-            #     self.main_window.error_dialog("Debug", f"La commande ls a retournéune erreur: {reponse.stderr}")
-            #self.main_window.info_dialog("Debug",f"Fichiers: {glob.glob("{self.android_path}*.json")}\nChemin d'origine: {self.android_path}")
-            # quizs = []
-            # for x in fichier:
-            #     if x[-5:].lower() == ".json":
-            #         quizs.append(x[:-5])
-            # self.file_choose = toga.Selection(items=["Choisir un questionnaire"]+quizs, style=Pack(width=200))
-            # choose_box.add(self.file_choose, toga.Button("Importer", style=Pack(width=150), on_press=self.modifier_load_selected))
-            #self.main_box.add(self.titre, self.aide, self.desc, self.bouton3, choose_box)
         else:
             self.fichier = await self.main_window.open_file_dialog(title=string[4], file_types=["json"], on_result=self.modifier_load_selected)
-    def modifier_load_selected(self, widget=None, dontknown=None):
-        #A réunir
-        suite = True
-        self.fichier = dontknown
-        if (self.fichier != None) and self.fichier != False:
-            try:
-                with open (str(self.fichier), 'r') as fichie:
-                    dico = json.load(fichie)
-            except json.JSONDecodeError:
-                self.main_window.error_dialog(title="Erreur JSON", message="Impossible d'ouvrir ce questionnaire car le fichier JSON est corrompu!")
-                suite = False
-            try:
-                self.proprety = dico["proprety"]
-                self.quest = dico["quest"]
-                self.soluc = dico["soluc"]
-                if self.proprety[0] == "QCM" or self.proprety[0] == "multi": self.rep = dico["rep"]
-            except (KeyError, IndexError):
-                self.main_window.error_dialog(title="Erreur de format", message="Certaines données présente dans le fichier sont incorrectes! Impossible d'ouvrir le questionnaire!")
-                suite = False
-            if suite == True:
-                try:
-                    self.option_window.close()
-                except (NameError, AttributeError, ValueError):
-                    pass
-                self.global_proprety = []
-                self.mode = self.proprety[0]
-                self.change_title_main_window(str(self.fichier).split("\\")[-1][:-5], True)
-                if self.proprety[0] == "simple":
-                    self.création_question_rafraichir()
-                elif self.proprety[0] == "QCM":
-                    self.création_QCM_question()
-                elif self.proprety[0] == "true/false":
-                    self.création_truefalse_rafraichir()
-                elif self.proprety[0] == "multi":
-                    self.global_proprety = self.proprety
-                    self.création_multi_checker()
-        else:
-            self.main_window.error_dialog(title="Aucun fichier choisie", message="Vous n'avez pas choisie de fichier lorsque cela l'a été demandé!")
     async def lecture_load(self, widget):
         string = self.strings[self.language]["load"]
         self.page = 0
         if current_platform == "android":
             suite = True
             content = await self.android_read()
-            #self.main_window.info_dialog("Debug", "Content: "+str(content)+"\nContent décodé: "+content.decode("utf_8"))
             try:
                 dico = json.loads(str(content.decode("utf-8")))
             except json.JSONDecodeError:
@@ -903,46 +850,6 @@ class QuêteduQI(toga.App):
                     await self.lecture_multi_check()
         else:
             self.fichier = await self.main_window.open_file_dialog(title=string[4], file_types=["json"], on_result=self.lecture_load_selected)
-    async def lecture_load_selected(self, widget=None, dontknown=None):
-        #A réunir
-        suite = True
-        self.fichier = dontknown
-        if (self.fichier != None) and self.fichier != False:
-            try:
-                with open (str(self.fichier), 'r') as fichie:
-                    dico = json.load(fichie)
-            except json.JSONDecodeError:
-                self.main_window.error_dialog(title="Erreur JSON", message="Impossible d'ouvrir ce questionnaire car le fichier JSON est corrompu!")
-                suite = False
-            try:
-                self.proprety = dico["proprety"]
-                self.quest = dico["quest"]
-                self.soluc = dico["soluc"]
-                if self.proprety[0] == "QCM" or self.proprety[0] == "multi": self.rep = dico["rep"]
-            except (KeyError, IndexError):
-                self.main_window.error_dialog(title="Erreur de format", message="Certaines données présente dans le fichier sont incorrectes! Impossible d'ouvrir le questionnaire!")
-                suite = False
-            if suite == True:
-                try:
-                    self.option_window.close()
-                except (NameError, AttributeError, ValueError):
-                    pass
-                self.global_proprety = []
-                self.change_state_nav(False)
-                self.clear = True
-                self.question_passé = []
-                self.change_title_main_window(str(self.fichier).split("\\")[-1][:-5], True)
-                if self.proprety[0] == "simple":
-                    await self.lecture_quiz_test()
-                elif self.proprety[0] == "QCM":
-                    await self.lecture_QCM_test()
-                elif self.proprety[0] == "true/false":
-                    await self.lecture_truefalse_test()
-                elif self.proprety[0] == "multi":
-                    self.global_proprety = self.proprety
-                    await self.lecture_multi_check()
-        else:
-            self.main_window.error_dialog(title="Aucun fichier choisie", message="Vous n'avez pas choisie de fichier lorsque cela l'a été demandé!")
     async def lecture_quiz_test(self, widget=None):
         string = self.strings[self.language]["quiz_test"]
         if self.global_proprety == []:
