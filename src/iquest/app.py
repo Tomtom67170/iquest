@@ -159,8 +159,8 @@ class QuêteduQI(toga.App):
         action = toga.Group(string[1])
         debug = toga.Group(string[2])
         nav = toga.Group(string[3])
-        cmd4 = toga.Command(self.save, string[4], tooltip=string[5], group=file, order=1, shortcut=toga.Key.MOD_1 + 's')
-        cmd5 = toga.Command(self.save_to, string[6], tooltip=string[7], group=file, order=2, shortcut=toga.Key.MOD_1 + toga.Key.SHIFT + 's')
+        cmd4 = toga.Command(lambda widget: asyncio.create_task(self.save(widget)), string[4], tooltip=string[5], group=file, order=1, shortcut=toga.Key.MOD_1 + 's')
+        cmd5 = toga.Command(lambda widget: asyncio.create_task(self.save(widget, save_to=True)), string[6], tooltip=string[7], group=file, order=2, shortcut=toga.Key.MOD_1 + toga.Key.SHIFT + 's')
         cmd1 = toga.Command(self.création_Créer, string[8], tooltip=string[9], group=action, order=1, shortcut=toga.Key.MOD_1 + 'n')
         cmd2 = toga.Command(self.modifier_load, string[10], tooltip=string[11], group=action, order=2, shortcut=toga.Key.MOD_1 + 'm')
         cmd3 = toga.Command(self.lecture_load, string[12], tooltip=string[13], group=action, order=3, shortcut=toga.Key.MOD_1 + 'o')
@@ -492,11 +492,8 @@ class QuêteduQI(toga.App):
                 self.création_question_rafraichir()
             # entré.delete("0","end")
             # bouton1.config(text = "Valider question", on_press=création.question.réponse)
-    async def save(self, widget):
+    async def save(self, widget, save_to=False):
         string = self.strings[self.language]["save"]
-        #actuel = self.entré.value
-        #warn = await self.main_window.question_dialog(title="Sauvegarder?", message="Voulez sauvegarder maintenant?", on_result=self.null)
-        #save = False
         if self.quest != [] and self.soluc != []:
             if current_platform == "android":
                 self.titre.text = string[0]
@@ -508,11 +505,14 @@ class QuêteduQI(toga.App):
                 self.bouton1.on_press, self.bouton1.text = self.file_selected, string[0]
                 self.main_window.info_dialog(string[4], string[5])
                 self.main_box.remove(self.bouton2, self.bouton3, self.nav, self.option_button)
-            else:
+            if not save_to:
                 if self.fichier == "":
                     self.fichier = await self.main_window.save_file_dialog(title=string[6], suggested_filename=string[7] ,file_types=["json"], on_result=self.file_selected)
                 else:
                     await self.file_selected()
+            else:
+                self.fichier = await self.main_window.save_file_dialog(title=string[6], suggested_filename=string[7] ,file_types=["json"], on_result=self.file_selected)
+                await self.file_selected()
         else:
             self.main_window.error_dialog(string[8], string[9])
     async def file_selected(self, widget=None, dontknown=None):
@@ -570,23 +570,6 @@ class QuêteduQI(toga.App):
         elif self.mode == "QCM": self.création_QCM_question()
         elif self.mode == "true/false": self.création_truefalse_rafraichir()
         elif self.mode == "multi": self.création_multi_checker()
-    async def save_to(self, widget):
-        #actuel = self.entré.value
-        #warn = await self.main_window.question_dialog(title="Sauvegarder?", message="Voulez sauvegarder maintenant?", on_result=self.null)
-        #save = False
-        if self.quest != [] and self.soluc != []:
-            if current_platform == "android":
-                self.titre.text = "Sauvegarder"
-                self.aide.text = "Choisir un nom\nde fichier"
-                self.desc.text = "\n".join(textwrap.wrap("Veuillez entrer un nom de questionnaire puis appuyer sur \"Sauvegarder\" pour lancer la sauvegarde\nPour modifier un questionnaire précedemment crée, entrer à nouveau son nom, puis validé!", width=self.width_windows))
-                self.entré
-                self.bouton1.on_press = self.file_selected
-                self.main_box.remove(self.bouton2, self.bouton3, self.nav, self.option_text, self.inclusive_canva, self.select_canva, self.shift_canva)
-                self.main_window.info_dialog("Restrictions Android", "Dû aux restrictions Android, il n'est pas possible de choisir l'emplacement de sauvegarde du fichier. Les quizs sont sauvegardé dans \"Espace partagé/documents/Quizs/\"")
-            else:
-                self.fichier = await self.main_window.save_file_dialog(title="Sauvegarder le questionnaire", suggested_filename="Sans nom.json" ,file_types=["json"], on_result=self.file_selected)
-        else:
-            self.main_window.error_dialog("Impossible de sauvegarder", "Votre questionnaire est incomplet, assurez vous d'en avoir déjà importé ou crée un") 
     def help_window(self, widget, pre_index=None):
         string = self.strings[self.language]["help"]
         if pre_index == None:
