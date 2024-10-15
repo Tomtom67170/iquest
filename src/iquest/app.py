@@ -1,4 +1,5 @@
-import toga, os, json, random, asyncio, textwrap, sys, pathlib#, subprocess
+import toga, os, json, random, asyncio, textwrap, sys#, subprocess
+from datetime import datetime
 import toga.paths
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
@@ -7,7 +8,6 @@ if os.name == "posix":
     if current_platform == "android":
         from android.content import Intent
         from java import jarray, jbyte
-#test de fonctionnement
 class QuêteduQI(toga.App):
     async def android_read(self, widget=None) -> bytes:
         fileChose = Intent(Intent.ACTION_GET_CONTENT)
@@ -373,9 +373,9 @@ class QuêteduQI(toga.App):
             self.proprety = self.global_proprety[1]
         self.phase = "quest"
         self.change_state_nav(True)
-        if self.proprety == []:
+        if self.proprety == []: #nouveau quiz
             self.proprety = ["simple", False, False, False, False, False, False, 3]
-        if len(self.proprety) < self.len_proprety_quiz:
+        if len(self.proprety) < self.len_proprety_quiz: #ancien quiz (obsolète)
             while len(self.proprety) < self.len_proprety_quiz:
                 self.proprety.append(False)
             self.main_window.info_dialog(string[0], string[1])
@@ -502,74 +502,53 @@ class QuêteduQI(toga.App):
                 self.entré.value = string[3]
                 if type(self.soluc[self.page]) == bool:
                     self.main_box.remove(self.truefalse_rep)
-                self.bouton1.on_press, self.bouton1.text = self.file_selected, string[0]
+                self.bouton1.on_press, self.bouton1.text = lambda widget: self.file_selected(widget, f"{self.android_path}{self.entré.value}"), string[0]
                 self.main_window.info_dialog(string[4], string[5])
                 self.main_box.remove(self.bouton2, self.bouton3, self.nav, self.option_button)
             if not save_to:
-                if self.fichier == "":
+                if self.fichier == "" or self.fichier == None:
                     self.fichier = await self.main_window.save_file_dialog(title=string[6], suggested_filename=string[7] ,file_types=["json"], on_result=self.file_selected)
                 else:
-                    await self.file_selected()
+                    self.file_selected(file_path=self.fichier)
             else:
                 self.fichier = await self.main_window.save_file_dialog(title=string[6], suggested_filename=string[7] ,file_types=["json"], on_result=self.file_selected)
-                await self.file_selected()
         else:
             self.main_window.error_dialog(string[8], string[9])
-    async def file_selected(self, widget=None, dontknown=None):
+    def file_selected(self, widget=None, file_path=None):
         string = self.strings[self.language]["file_selected"]
-        if current_platform == "android":
-            if dontknown == "android":
-                pass
-            elif self.entré.value != "":
-                self.fichier = f"{self.android_path}{self.entré.value}.json"
-            else:
-                self.fichier = False
-            if str(self.fichier) == f"{self.android_path}Choisir un questionnaire.json":
-                self.fichier = False
-        if (self.fichier != None) and self.fichier != False:
+        if file_path == "" or file_path == None:
+            self.main_window.error_dialog(string[8], string[9])
+        else:
             dico = {}
             if self.global_proprety == []:
                 dico["proprety"] = self.proprety
-                dico["quest"] = self.quest
-                dico["soluc"] = self.soluc
                 if self.proprety[0] == "QCM":
                     dico["rep"] = self.rep
             else:
                 dico["proprety"] = self.global_proprety
-                dico["quest"] = self.quest
-                dico["soluc"] = self.soluc
                 dico["rep"] = self.rep
+            dico["quest"] = self.quest
+            dico["soluc"] = self.soluc
             try:
-                with open (str(self.fichier),'w') as fichie:
-                    fichie.write(json.dumps(dico, indent=4))
+                with open(file_path, 'w') as fichier:
+                    fichier.write(json.dumps(dico, indent=4))
             except PermissionError:
                 if current_platform == "android":
-                    self.fichier = self.fichier[:-5]+"_temp.json"
+                    date = datetime.now()
+                    filename = f"save_{date.year}_{date.month}_{date.day}_{date.hour}{date.minute}{date.second}.json"
                     try:
-                        with open (str(self.fichier),'w') as fichie:
-                            fichie.write(json.dumps(dico, indent=4))
-                        self.main_window.error_dialog(string[0], string[1])
+                        with open(f"{self.android_path}{filename}", 'w') as fichier:
+                            fichier.write(json.dumps(dico, indent=4))
                     except PermissionError:
                         self.main_window.error_dialog(string[2], string[3])
+                    else:
+                        self.main_window.info_dialog(string[0], string[1])
                 else:
-                    self.main_window.error_dialog(title=string[4], message=string[5])
+                    self.main_window.info_dialog(string[4], string[5])
             else:
-                await self.main_window.info_dialog(title=string[6], message=string[7])
-                # if type(self.fichier) == str:
-                #     print(type(self.fichier))
-                #     print("Méthode par défault utilisée")
-                #     filename = str(self.fichier).split("\\")[-1]
-                # else:
-                #     filename = self.fichier.name
-                self.change_title_main_window(str(self.fichier).split("\\")[-1][:-5], True)
-                if current_platform == "android":
-                    await self.option_aband()
-        else:
-            self.main_window.error_dialog(title=string[8], message=string[9])
-        if self.mode == "simple": self.création_question_rafraichir()
-        elif self.mode == "QCM": self.création_QCM_question()
-        elif self.mode == "true/false": self.création_truefalse_rafraichir()
-        elif self.mode == "multi": self.création_multi_checker()
+                self.main_window.info_dialog(string[6], string[7])
+                self.fichier = file_path
+                self.change_title_main_window(str(file_path).split("\\")[-1][:-5], True)
     def help_window(self, widget, pre_index=None):
         string = self.strings[self.language]["help"]
         if pre_index == None:
@@ -1049,7 +1028,7 @@ class QuêteduQI(toga.App):
             self.help_canva.add(self.option_menu, insert_button)
             self.main_box.add(self.help_canva)
         else:
-            cannot = toga.Label(text=string[20], style=Pack(font_family="Calibri light", font_size=12, text_align = CENTER))
+            cannot = toga.Label(text=string[21], style=Pack(font_family="Calibri light", font_size=12, text_align = CENTER))
             if current_platform == "android": cannot.text = "\n".join(textwrap.wrap(string[20], width=self.width_windows))
             self.main_box.add(cannot)
         self.entré.focus()
@@ -1111,7 +1090,7 @@ class QuêteduQI(toga.App):
             if self.proprety[6] == False:
                 self.clear = False
             if self.essaie != 0:
-                self.main_window.error_dialog(title=string[4], message=string[5]+self.essaie+string[6])
+                self.main_window.error_dialog(title=string[4], message=string[5]+str(self.essaie)+string[6])
                 self.essaie -= 1
             else:
                 self.clear = False

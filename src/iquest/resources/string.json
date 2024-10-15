@@ -133,9 +133,9 @@
         ],
         "file_selected":[
             "Fichier enregistré dans un emplacement temporaire",
-            "Dû aux restrictions Android, le fichier n'a pu être écrit dans l'emplacement voulu. Il a été sauvegardé dans un fichier de secours, intitulé le [nom_de_votre_quiz]_temp.json. Veuillez supprimer le fichier d'origine, puis rouvrez ce logiciel pour l'enregistrer avec son nom d'origine!",
+            "Dû aux restrictions Android, le fichier n'a pu être écrit dans l'emplacement voulu. Il a été sauvegardé dans un fichier de secours, intitulé le save[date_d'enregistrement].json. Veuillez supprimer le fichier d'origine, puis rouvrez ce logiciel pour l'enregistrer avec son nom d'origine!",
             "Impossible d'enregistrer une version normale et une version de secours du quiz!",
-            "Nous n'avons pas les autorisations pour enregistrer le fichier demandé, et nous n'avons pas les autorisations pour enregistrer un fichier de secours. Veuillez supprimer le fichier de secours où le fichier original pour procéder à l'enregistrement!",
+            "Nous n'avons pas les autorisations pour enregistrer le fichier demandé, et nous n'avons pas les autorisations pour enregistrer un fichier de secours. Veuillez accorder les permissions d'accès au stockage dans Paramètres de l'appareil>Applications>Quête du QI>Autorisations",
             "Permission non accordée!",
             "Vous n'avez pas les permissions de sauvegarder ici! Vérifier que vous avez les droits ou choisissez un autre emplacement!",
             "Enregistrement réussi!",
