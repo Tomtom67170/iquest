@@ -978,6 +978,8 @@ class QuêteduQI(toga.App):
     async def lecture_quiz_check(self, widget=None, skip=None):
         string = self.strings[self.language]["quiz_check"]
         don = self.entré.value
+        if self.proprety[2]:
+            resp = self.soluc[self.question].replace("§","")
         if don != resp:
             legit = False
         else:
