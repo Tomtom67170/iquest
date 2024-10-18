@@ -200,7 +200,9 @@
             "Impossible d'ouvrir ce questionnaire car le fichier JSON est corrompu!",
             "Erreur de format",
             "Certaines données présente dans le fichier sont incorrectes! Impossible d'ouvrir le questionnaire!",
-            "Ouvrir un questionnaire"
+            "Ouvrir un questionnaire",
+            "Aucun fichier choisie",
+            "Vous n'avez pas choisie de fichier lorsque cela l'a été demandé!"
         ],
         "quiz_test":[
             "Quiz completé!",
@@ -224,7 +226,7 @@
             "Quitter",
             "Choisir une réponse",
             "Insérer cette réponse",
-            "L'option d'aide à la réponse a été désactivée pour ce questionnaire"
+            "L'option d'aide à la réponse n'a pas été activée pour ce questionnaire"
         ],
         "quiz_check":[
             "Bonne réponse",

@@ -783,73 +783,98 @@ class QuêteduQI(toga.App):
         string = self.strings[self.language]["load"]
         self.page = 0
         if current_platform == "android":
-            suite = True
             content = await self.android_read()
             try:
                 dico = json.loads(str(content.decode("utf-8")))
             except json.JSONDecodeError:
                 self.main_window.error_dialog(title=string[0], message=string[1])
-                suite = False
-            try:
-                self.proprety = dico["proprety"]
-                self.quest = dico["quest"]
-                self.soluc = dico["soluc"]
-                if self.proprety[0] == "QCM" or self.proprety[0] == "multi": self.rep = dico["rep"]
-            except (KeyError, IndexError):
-                self.main_window.error_dialog(title=string[2], message=string[3])
-                suite = False
-            if suite == True:
-                self.global_proprety = []
-                self.mode = self.proprety[0]
-                self.change_title_main_window(str(self.fichier).split("/")[-1][:-5], True)
-                if self.proprety[0] == "simple":
-                    self.création_question_rafraichir()
-                elif self.proprety[0] == "QCM":
-                    self.création_QCM_question()
-                elif self.proprety[0] == "true/false":
-                    self.création_truefalse_rafraichir()
-                elif self.proprety[0] == "multi":
-                    self.global_proprety = self.proprety
-                    self.création_multi_checker()
+                return
         else:
-            self.fichier = await self.main_window.open_file_dialog(title=string[4], file_types=["json"], on_result=self.modifier_load_selected)
+            self.fichier = await self.main_window.open_file_dialog(title=string[4], file_types=["json"], on_result=self.null)
+            if (self.fichier != None) and self.fichier != False:
+                try:
+                    with open (str(self.fichier), 'r') as fichie:
+                        dico = json.load(fichie)
+                except (json.JSONDecodeError, UnicodeDecodeError):
+                    self.main_window.error_dialog(title=string[0], message=string[1])
+                    return
+            else:
+                self.main_window.error_dialog(title=string[5], message=string[6])
+                return
+        try:
+            self.proprety = dico["proprety"]
+            self.quest = dico["quest"]
+            self.soluc = dico["soluc"]
+            if self.proprety[0] == "QCM" or self.proprety[0] == "multi": self.rep = dico["rep"]
+        except (KeyError, IndexError):
+            self.main_window.error_dialog(title=string[2], message=string[3])
+            return
+        try:
+            self.option_window.close()
+        except (NameError, AttributeError, ValueError):
+            pass
+        self.global_proprety = []
+        self.change_state_nav(False)
+        self.clear = True
+        self.change_title_main_window(str(self.fichier).split("\\")[-1][:-5], True)
+        if self.proprety[0] == "simple":
+            self.création_question_rafraichir()
+        elif self.proprety[0] == "QCM":
+            self.création_QCM_question()
+        elif self.proprety[0] == "true/false":
+            self.création_truefalse_rafraichir()
+        elif self.proprety[0] == "multi":
+            self.global_proprety = self.proprety
+            self.création_multi_checker()
     async def lecture_load(self, widget):
         string = self.strings[self.language]["load"]
         self.page = 0
         if current_platform == "android":
-            suite = True
             content = await self.android_read()
             try:
                 dico = json.loads(str(content.decode("utf-8")))
             except json.JSONDecodeError:
                 self.main_window.error_dialog(title=string[0], message=string[1])
-                suite = False
-            try:
-                self.proprety = dico["proprety"]
-                self.quest = dico["quest"]
-                self.soluc = dico["soluc"]
-                if self.proprety[0] == "QCM" or self.proprety[0] == "multi": self.rep = dico["rep"]
-            except (KeyError, IndexError):
-                self.main_window.error_dialog(title=string[2], message=string[3])
-                suite = False
-                self.question_passé = []
-            if suite == True:
-                self.global_proprety = []
-                self.change_state_nav(False)
-                self.clear = True
-                self.question_passé = []
-                self.change_title_main_window(str(self.fichier).split("\\")[-1][:-5], True)
-                if self.proprety[0] == "simple":
-                    await self.lecture_quiz_test()
-                elif self.proprety[0] == "QCM":
-                    await self.lecture_QCM_test()
-                elif self.proprety[0] == "true/false":
-                    await self.lecture_truefalse_test()
-                elif self.proprety[0] == "multi":
-                    self.global_proprety = self.proprety
-                    await self.lecture_multi_check()
+                return
         else:
-            self.fichier = await self.main_window.open_file_dialog(title=string[4], file_types=["json"], on_result=self.lecture_load_selected)
+            self.fichier = await self.main_window.open_file_dialog(title=string[4], file_types=["json"], on_result=self.null)
+            if (self.fichier != None) and self.fichier != False:
+                try:
+                    with open (str(self.fichier), 'r') as fichie:
+                        dico = json.load(fichie)
+                except (json.JSONDecodeError, UnicodeDecodeError):
+                    self.main_window.error_dialog(title=string[0], message=string[1])
+                    return
+            else:
+                self.main_window.error_dialog(title=string[5], message=string[6])
+                return
+        try:
+            self.proprety = dico["proprety"]
+            self.quest = dico["quest"]
+            self.soluc = dico["soluc"]
+            if self.proprety[0] == "QCM" or self.proprety[0] == "multi": self.rep = dico["rep"]
+        except (KeyError, IndexError):
+            self.main_window.error_dialog(title=string[2], message=string[3])
+            self.question_passé = []
+            return
+        try:
+            self.option_window.close()
+        except (NameError, AttributeError, ValueError):
+            pass
+        self.global_proprety = []
+        self.change_state_nav(False)
+        self.clear = True
+        self.question_passé = []
+        self.change_title_main_window(str(self.fichier).split("\\")[-1][:-5], True)
+        if self.proprety[0] == "simple":
+            await self.lecture_quiz_test()
+        elif self.proprety[0] == "QCM":
+            await self.lecture_QCM_test()
+        elif self.proprety[0] == "true/false":
+            await self.lecture_truefalse_test()
+        elif self.proprety[0] == "multi":
+            self.global_proprety = self.proprety
+            await self.lecture_multi_check()
     async def lecture_quiz_test(self, widget=None):
         string = self.strings[self.language]["quiz_test"]
         if self.global_proprety == []:
@@ -1064,16 +1089,10 @@ class QuêteduQI(toga.App):
             if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(desc_text), width=self.width_windows)
             else: self.desc.text = desc_text
             # result = num_question
-            if self.global_proprety == []:
-                a_b = toga.Button(text=self.soluc[a_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="A")))
-                b_b = toga.Button(text=self.soluc[b_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="B")))
-                c_b = toga.Button(text=self.soluc[c_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="C")))
-                d_b = toga.Button(text=self.soluc[d_t], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="D")))
-            else:
-                a_b = toga.Button(text=self.soluc[self.num_question][0], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="A")))
-                b_b = toga.Button(text=self.soluc[self.num_question][1], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="B")))
-                c_b = toga.Button(text=self.soluc[self.num_question][2], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="C")))
-                d_b = toga.Button(text=self.soluc[self.num_question][3], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="D")))
+            a_b = toga.Button(text=self.soluc[a_t]if self.global_proprety == [] else self.soluc[self.num_question][0], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="A")))
+            b_b = toga.Button(text=self.soluc[b_t]if self.global_proprety == [] else self.soluc[self.num_question][1], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="B")))
+            c_b = toga.Button(text=self.soluc[c_t]if self.global_proprety == [] else self.soluc[self.num_question][2], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="C")))
+            d_b = toga.Button(text=self.soluc[d_t]if self.global_proprety == [] else self.soluc[self.num_question][3], on_press=lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check="D")))
             self.main_box.add(self.titre, self.aide, self.desc, a_b, b_b, c_b, d_b, self.bouton1)
         else:
             if current_platform == "android": self.titre.text = string[12]
@@ -1086,30 +1105,20 @@ class QuêteduQI(toga.App):
                 desc_text += "\n"+len(self.rep[self.num_question])+string[15]
             if current_platform == "android" : self.desc.text="\n".join(textwrap.wrap(text=str(desc_text), width=self.width_windows))
             else: self.desc.text = desc_text
-            a_box = toga.Box(style=Pack(direction = ROW))
-            b_box = toga.Box(style=Pack(direction = ROW))
-            c_box = toga.Box(style=Pack(direction = ROW))
-            d_box = toga.Box(style=Pack(direction = ROW))
-            self.A_s = toga.Switch(style=Pack(font_size=12), text="")
-            self.B_s = toga.Switch(style=Pack(font_size=12), text="")
-            self.C_s = toga.Switch(style=Pack(font_size=12), text="")
-            self.D_s = toga.Switch(style=Pack(font_size=12), text="")
-            if self.global_proprety == []:
-                A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[a_t])
-                B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[b_t])
-                C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[c_t])
-                D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[d_t])
-            else:
-                A_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][0])
-                B_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][1])
-                C_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][2])
-                D_e = toga.Label(style=Pack(font_family="Calibri light", font_size=12, width=300, text_align=CENTER), text = self.soluc[self.num_question][3])
-            a_box.add(A_e, self.A_s)
-            b_box.add(B_e, self.B_s)
-            c_box.add(C_e, self.C_s)
-            d_box.add(D_e, self.D_s)
+            self.B_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
+            self.C_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
+            self.D_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
+            self.A_box = toga.Box(style=Pack(alignment=CENTER, direction=ROW))
+            self.A_s = toga.Switch(style=Pack(font_size=12),text=self.soluc[a_t] if self.global_proprety == [] else self.soluc[self.num_question][0])
+            self.B_s = toga.Switch(style=Pack(font_size=12),text=self.soluc[b_t] if self.global_proprety == [] else self.soluc[self.num_question][1])
+            self.C_s = toga.Switch(style=Pack(font_size=12),text=self.soluc[c_t] if self.global_proprety == [] else self.soluc[self.num_question][2])
+            self.D_s = toga.Switch(style=Pack(font_size=12),text=self.soluc[d_t] if self.global_proprety == [] else self.soluc[self.num_question][3])
             self.bouton2.text, self.bouton2.on_press = string[16], lambda widget, self=self: asyncio.create_task(self.lecture_QCM_check(to_check=None))
-            self.main_box.add(self.titre, self.aide, self.desc, a_box, b_box, c_box, d_box, self.bouton2, self.bouton1)
+            self.A_box.add(self.A_s)
+            self.B_box.add(self.B_s)
+            self.C_box.add(self.C_s)
+            self.D_box.add(self.D_s)
+            self.main_box.add(self.titre, self.aide, self.desc, self.A_box, self.B_box, self.C_box, self.D_box, self.bouton2, self.bouton1)
         self.bouton1.text, self.bouton1.on_press = string[17], self.option_aband
     async def lecture_QCM_check(self, to_check:str):
         string = self.strings[self.language]["QCM_check"]
