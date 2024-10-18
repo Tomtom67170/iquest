@@ -140,6 +140,7 @@ class QuêteduQI(toga.App):
         elif self.mode == "multi":
             self.création_multi_checker()
     def option_défintion(self, widget=None):
+        print("Fenêtre clear")
         self.main_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         self.main_window.content = self.main_box
         self.titre.style.update(font_family="Calibri light", font_size=30, text_align=CENTER)
@@ -500,7 +501,7 @@ class QuêteduQI(toga.App):
                 self.aide.text = string[1]
                 self.desc.text = "\n".join(textwrap.wrap(string[2], width=self.width_windows))
                 self.entré.value = string[3]
-                if type(self.soluc[self.page]) == bool:
+                if type(self.soluc[self.page-1]) == bool:
                     self.main_box.remove(self.truefalse_rep)
                 self.bouton1.on_press, self.bouton1.text = lambda widget: self.file_selected(widget, f"{self.android_path}{self.entré.value}"), string[0]
                 self.main_window.info_dialog(string[4], string[5])
@@ -549,6 +550,15 @@ class QuêteduQI(toga.App):
                 self.main_window.info_dialog(string[6], string[7])
                 self.fichier = file_path
                 self.change_title_main_window(str(file_path).split("\\")[-1][:-5], True)
+            if current_platform == "android":
+                if self.proprety[0] == "simple":
+                    self.création_question_rafraichir()
+                elif self.proprety[0] == "QCM":
+                    self.création_QCM_question()
+                elif self.proprety[0] == "true/false":
+                    self.création_truefalse_rafraichir()
+                elif self.proprety[0] == "multi":
+                    self.création_multi_checker()
     def help_window(self, widget, pre_index=None):
         string = self.strings[self.language]["help"]
         if pre_index == None:
@@ -817,6 +827,7 @@ class QuêteduQI(toga.App):
         self.change_state_nav(False)
         self.clear = True
         self.change_title_main_window(str(self.fichier).split("\\")[-1][:-5], True)
+        self.mode = self.proprety[0]
         if self.proprety[0] == "simple":
             self.création_question_rafraichir()
         elif self.proprety[0] == "QCM":
@@ -961,13 +972,12 @@ class QuêteduQI(toga.App):
             self.main_box.add(self.help_canva)
         else:
             cannot = toga.Label(text=string[21], style=Pack(font_family="Calibri light", font_size=12, text_align = CENTER))
-            if current_platform == "android": cannot.text = "\n".join(textwrap.wrap(string[20], width=self.width_windows))
+            if current_platform == "android": cannot.text = "\n".join(textwrap.wrap(string[21], width=self.width_windows))
             self.main_box.add(cannot)
         self.entré.focus()
     async def lecture_quiz_check(self, widget=None, skip=None):
         string = self.strings[self.language]["quiz_check"]
         don = self.entré.value
-        resp = self.soluc[self.question].replace("*","")
         if don != resp:
             legit = False
         else:
