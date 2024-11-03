@@ -968,7 +968,7 @@ class QuêteduQI(toga.App):
                     random_index = random.randint(0, len(soluc_list)-1)
                 lst_append.append(random_index)
                 final_help.append(soluc_list[random_index])
-            self.option_menu = toga.Selection(style=Pack(width=200), items=[string[18]]+final_help, value="Choisir une réponse")
+            self.option_menu = toga.Selection(style=Pack(width=200), items=[string[18]]+final_help)
             insert_button = toga.Button(text=string[19], on_press= lambda widget: setattr(self.entré, 'value', self.option_menu.value))
             self.help_canva.add(self.option_menu, insert_button)
             self.main_box.add(self.help_canva)
