@@ -66,6 +66,7 @@ class QuêteduQI(toga.App):
 
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = self.main_box
+        self.main_window.on_close
         self.main_window.show()
 
         self.titre = toga.Label(text="self.titre")
@@ -407,6 +408,7 @@ class QuêteduQI(toga.App):
         self.next_button = toga.Button(text=string[12], on_press=self.nav_next ,style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.previous_button = toga.Button(text=string[13], on_press=self.nav_previous, style=Pack(font_family="Calibri light", font_size=12, text_align=CENTER))
         self.nav.add(self.previous_button, self.del_button, self.next_button)
+        #quest_select = toga.Selection(style=Pack(flex=1, padding=(0, 30)), items=["Choisir une question"]+self.quest, on_change=self.change_quest)
         if self.page == 0: self.previous_button.enabled, self.prev_page.enabled = False, False
         else: self.previous_button.enabled, self.prev_page.enabled = True, True
         if self.page == len(self.quest): self.next_button.enabled, self.del_button.enabled, self.next_page.enabled, self.suppr.enabled = False, False, False, False
@@ -417,7 +419,7 @@ class QuêteduQI(toga.App):
         self.del_button,
         self.next_button
         )
-        self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_button)
+        self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.bouton2, self.bouton3, self.nav, self.option_button) #ajouter quest_select
         self.entré.focus()
     def change_check(self, widget, mode=None):
         """
@@ -1236,6 +1238,25 @@ class QuêteduQI(toga.App):
             await self.lecture_QCM_test()
         elif type(last_question) == bool:
             await self.lecture_truefalse_test()
+    async def change_quest(self, widget):
+        string = self.strings[self.language]["change_quest"]
+        for i in range(len(self.quest)):
+            if self.quest[i] == widget.value:
+                self.page = i
+                break
+        else:
+            self.main_window.error_dialog(string[0], string[1])
+            return
+        if self.global_proprety == []:
+            if self.proprety[0] == "simple":
+                await self.création_question_rafraichir()
+            elif self.proprety[0] == "QCM":
+                await self.création_QCM_question()
+            elif self.proprety[0] == "true/false":
+                await self.création_truefalse_rafraichir()
+        else:
+            self.global_proprety = self.proprety
+            await self.création_multi_checker()
     def get_rep(self, char:str, to_check:str) -> bool:
         for x in to_check:
             if x == char:

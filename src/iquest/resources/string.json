@@ -91,7 +91,7 @@
             "Créer",
             "Créer une question",
             "Modifier",
-            "Modificer une question",
+            "Modifier une question",
             "Veuillez entrer une question",
             "Veuillez indiquez dans le champ ci-dessous votre question\nAppuyer ensuite sur \"Valider question\" pour entrer une réponse",
             "Valider question",
@@ -313,6 +313,10 @@
                 "Si cette option est activée, l'utilisateur devra choisir une réponse parmi les 4 disponibles, si il choisit une des bonnes réponses, la question en sera validée.\nLorsque l'option est désactivée, l'utilisateur devra sélectionner toutes les réponses qu'il juge correct, ATTENTION: Il devra valider TOUTES les bonnes réponses",
                 "Si cette option est activée, l'utilisateur sera tenu informé du nombre de réponses possibles"
             ]
+        ],
+        "change_quest":[
+            "Impossible de trouver la question",
+            "Il est impossible d'accéder à la question demandée car elle n'existe pas!\nSi le problème persiste, merci de contacter Loinaf"
         ]
     }
 }
