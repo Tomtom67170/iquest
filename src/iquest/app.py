@@ -947,8 +947,8 @@ class QuêteduQI(toga.App):
             del self.desc.style.color
         self.entré = toga.TextInput(style=Pack(font_family = "Calibri light", font_size = 12, width=300), on_confirm=self.lecture_quiz_check)
         self.bouton1.text, self.bouton1.on_press = string[16], self.lecture_quiz_check
-        self.passer = toga.Button(text="Passer",on_press=self.option_skip, style=Pack(width=300, font_family="Calibri light", font_size=12, padding=(0, 0, 5, 0)))
-        self.bouton2.text, self.bouton2.on_press = string[17], self.option_aband
+        self.passer = toga.Button(text=string[17],on_press=self.option_skip, style=Pack(width=300, font_family="Calibri light", font_size=12, padding=(0, 0, 5, 0)))
+        self.bouton2.text, self.bouton2.on_press = string[18], self.option_aband
         self.help_canva = toga.Box(style=Pack(direction = ROW))
         self.main_box.add(self.titre, self.aide, self.desc, self.entré, self.bouton1, self.passer, self.bouton2)
         self.essaie = self.proprety[-1] - 1
@@ -982,6 +982,8 @@ class QuêteduQI(toga.App):
         don = self.entré.value
         if self.proprety[2]:
             resp = self.soluc[self.question].replace("§","")
+        else:
+            resp = self.soluc[self.question]
         if don != resp:
             legit = False
         else:
